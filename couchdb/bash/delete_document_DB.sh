@@ -32,7 +32,7 @@ echo $BEATRIX_EMORY_REV
 echo $INFERNO_FLARE_REV
 
 # Combine Revision with URL
-JOXOS_URL="http://localhost:5984/heroes/JOXOS?rev=$VI_REV"
+JOXOS_URL="http://localhost:5984/heroes/JOXOS?rev=$JOXOS_REV"
 VI_URL="http://localhost:5984/heroes/VI?rev=$VI_REV"
 ROKH_AEGIS_URL="http://localhost:5984/heroes/ROKH_AEGIS?rev=$ROKH_AEGIS_REV"
 TRANQUILITY_URL="http://localhost:5984/heroes/TRANQUILITY?rev=$TRANQUILITY_REV"
