@@ -21,3 +21,5 @@ echo "curl -H 'Content-Type:application/json' -X POST 'http://localhost:5984/her
 curl -H 'Content-Type:application/json' -X POST 'http://localhost:5984/heroes/_find' -d '{"selector": {"health": { "$gt": 100 }}, "fields": ["name", "health"], "limit": 20}'
 
 # Find All Document Changes
+echo "curl -X GET 'http://localhost:5984/heroes/_changes'" 
+curl -X GET 'http://localhost:5984/heroes/_changes'
