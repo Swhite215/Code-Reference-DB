@@ -1,0 +1,70 @@
+# Update Document - CAN BE IMPROVED - LOOP: GRAB REV, PARSE, CREATE URL, UPDATE DOCUMENT
+
+JOXOS='{"name": "Joxos", "health": 250, "stamina": 150, "atk":25, "items": ["Unity Stone"], "canFight": true, "current_location": "E.C.R.I.C."}'
+VI='{"name": "Vi", "health": 75, "mana": 150, "atk": 5, "magic": 25,"items": ["Tetrahedron", "Octahedron", "Cube", "Icosahedron"], "canFight": true, "canCast": true, "current_location": "E.C.R.I.C."}'
+ROKH_AEGIS='{"name": "Rokh", "health": 100, "stamina": 125, "atk":35, "items": ["Aegis Core"], "canFight": true, "canSteal": true, "current_location": "E.C.R.I.C."}'
+TRANQUILITY='{"name": "Tranquility", "health": 125, "stamina": 100, "atk":20, "items": ["Serenity Key"], "canFight": true, "current_location": "Hope`s Haven"}'
+BEATRIX_EMORY='{"name": "Beatrix", "health": 125, "mana": 125, "atk":15, "magic": 20, "items": ["Emory Mantle"], "canFight": true, "canCast": true, "canHeal": true, "current_location": "Stone Crest"}'
+INFERNO_FLARE='{"name": "Inferno", "health": 150, "stamina": 75, "atk":40, "items": ["Blazing Blade"], "canFight": true, "canCast": true, "current_location": "Hope`s Haven"}'
+
+echo $JOXOS
+echo $VI
+echo $ROKH_AEGIS
+echo $TRANQUILITY
+echo $BEATRIX_EMORY
+echo $INFERNO_FLARE
+
+# Grab Latest Revision and Save to File
+curl -X GET 'http://localhost:5984/heroes/JOXOS?revs=true' | jq '._rev' > joxos_rev.txt
+curl -X GET 'http://localhost:5984/heroes/VI?revs=true' | jq '._rev' > vi_rev.txt
+curl -X GET 'http://localhost:5984/heroes/ROKH_AEGIS?revs=true' | jq '._rev' > rokh_aegis_rev.txt
+curl -X GET 'http://localhost:5984/heroes/TRANQUILITY?revs=true' | jq '._rev' > tranquility_rev.txt
+curl -X GET 'http://localhost:5984/heroes/BEATRIX_EMORY?revs=true' | jq '._rev' > beatrix_emory_rev.txt
+curl -X GET 'http://localhost:5984/heroes/INFERNO_FLARE?revs=true' | jq '._rev' > inferno_flare_rev.txt
+
+# Remove Qoutes from Revision
+sed 's/\"//g' joxos_rev.txt > joxos_rev_value.txt
+sed 's/\"//g' vi_rev.txt > vi_rev_value.txt
+sed 's/\"//g' rokh_aegis_rev.txt > rokh_aegis_rev_value.txt
+sed 's/\"//g' tranquility_rev.txt > tranquility_rev_value.txt
+sed 's/\"//g' beatrix_emory_rev.txt > beatrix_emory_rev_value.txt
+sed 's/\"//g' inferno_flare_rev.txt > inferno_flare_rev_value.txt
+
+# Check Revision Values
+JOXOS_REV=`cat joxos_rev_value.txt`
+VI_REV=`cat vi_rev_value.txt`
+ROKH_AEGIS_REV=`cat rokh_aegis_rev_value.txt`
+TRANQUILITY_REV=`cat tranquility_rev_value.txt`
+BEATRIX_EMORY_REV=`cat beatrix_emory_rev_value.txt`
+INFERNO_FLARE_REV=`cat inferno_flare_rev_value.txt`
+
+echo $JOXOS_REV
+echo $VI_REV
+echo $ROKH_AEGIS_REV
+echo $TRANQUILITY_REV
+echo $BEATRIX_EMORY_REV
+echo $INFERNO_FLARE_REV
+
+# Combine Revision with URL
+JOXOS_URL="http://localhost:5984/heroes/JOXOS?rev=$JOXOS_REV"
+VI_URL="http://localhost:5984/heroes/VI?rev=$VI_REV"
+ROKH_AEGIS_URL="http://localhost:5984/heroes/ROKH_AEGIS?rev=$ROKH_AEGIS_REV"
+TRANQUILITY_URL="http://localhost:5984/heroes/TRANQUILITY?rev=$TRANQUILITY_REV"
+BEATRIX_EMORY_URL="http://localhost:5984/heroes/BEATRIX_EMORY?rev=$BEATRIX_EMORY_REV"
+INFERNO_FLARE_URL="http://localhost:5984/heroes/INFERNO_FLARE?rev=$INFERNO_FLARE_REV"
+
+# Check URLS
+echo $JOXOS_URL
+echo $VI_URL
+echo $ROKH_AEGIS_URL
+echo $TRANQUILITY_URL
+echo $BEATRIX_EMORY_URL
+echo $INFERNO_FLARE_URL
+
+# Update Documents Using Latest Revision Number
+jq -n "$JOXOS" | curl -H 'Content-Type:application/json' -X PUT $JOXOS_URL -d @-
+jq -n "$VI" | curl -H 'Content-Type:application/json' -X PUT $VI_URL -d @-
+jq -n "$ROKH_AEGIS" | curl -H 'Content-Type:application/json' -X PUT $ROKH_AEGIS_URL -d @-
+jq -n "$TRANQUILITY" | curl -H 'Content-Type:application/json' -X PUT $TRANQUILITY_URL -d @-
+jq -n "$BEATRIX_EMORY" | curl -H 'Content-Type:application/json' -X PUT $BEATRIX_EMORY_URL -d @-
+jq -n "$INFERNO_FLARE" | curl -H 'Content-Type:application/json' -X PUT $INFERNO_FLARE_URL -d @-
