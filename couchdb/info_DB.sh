@@ -11,3 +11,10 @@ curl -X GET 'http://localhost:5984/heroes'
 
 echo "curl -I HEAD 'http://localhost:5984/heroes'" 
 curl -I HEAD 'http://localhost:5984/heroes'
+
+# Get Database Information
+echo "curl -X GET 'http://localhost:5984/villians'" 
+curl -X GET 'http://localhost:5984/villians'
+
+echo "curl -I HEAD 'http://localhost:5984/villians'" 
+curl -I HEAD 'http://localhost:5984/villians'
