@@ -1,2 +1,2 @@
-# Create Database Information - curl -X METHOD http://domain:port
+# Create Database
 curl -X PUT http://localhost:5984/heroes
