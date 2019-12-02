@@ -10,9 +10,23 @@ app.use(express.json()); //Allows the use of middleware in the request pipeline
 
 //Handlers
 
+// GET - Get all Databases
+app.get("/", async(req, res, next) => {
+
+    try {
+        let databases = await nano.db.list();
+        console.log(databases);
+        res.send(databases)
+
+    } catch(e) {
+        console.log(`Error getting databases: ${e}`)
+        next(`Error getting databases: ${e}`)
+    }
+
+});
+
 // POST - Create a Database
 app.post("/:name", async (req, res, next) => {
-    console.log(req.params)
     let dbToCreate = req.params.name;
 
     try {
