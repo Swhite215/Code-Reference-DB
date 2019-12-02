@@ -72,8 +72,8 @@ app.post("/dbs/:name", async (req, res, next) => {
         }
 
     } catch(e) {
-        console.log(`Error creating database: ${e}`)
-        next(`Error creating database: ${e}`)
+        console.log(`Error creating database ${dbToCreate}: ${e}`)
+        next(`Error creating database ${dbToCreate}: ${e}`)
     }
 
 
@@ -91,11 +91,35 @@ app.delete("/dbs/:name", async(req, res, next) => {
         }
 
     } catch(e) {
-        console.log(`Error deleting database: ${e}`)
-        next(`Error deleting database: ${e}`)
+        console.log(`Error deleting database ${dbToDelete}: ${e}`)
+        next(`Error deleting database ${dbToDelete}: ${e}`)
     }
 });
 
+//Document Handlers
+
+// POST - Create a document
+app.post("/db/:db/document/:id", async(req, res, next) => {
+    const dbToUse = req.params.db;
+    const documentId = req.params.id;
+
+    let body = req.body;
+
+    const db = nano.use(dbToUse);
+
+    try {
+        let newDocument = await db.insert(body, documentId);
+
+        if (newDocument.ok) {
+            res.send(`Document was created ${documentId}`)
+        }
+        
+    } catch(e) {
+        console.log(`Error creating document ${documentId}: ${e}`)
+        next(`Error creating document ${documentId}: ${e}`)
+    }
+
+});
 
 //Error Handler
 app.use((err, req, res, next) => {
