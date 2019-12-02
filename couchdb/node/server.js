@@ -98,6 +98,26 @@ app.delete("/dbs/:name", async(req, res, next) => {
 
 //Document Handlers
 
+// GET - Get a Document
+app.get("/db/:db/document/:id", async(req, res, next) => {
+    const dbToUse = req.params.db;
+    const documentId = req.params.id;
+
+    const db = nano.use(dbToUse);
+
+    try {
+        let document = await db.get(documentId);
+      
+        res.send(document);
+
+    } catch(e) {
+        console.log(`Error getting document ${documentId}: ${e}`)
+        next(`Error getting document ${documentId}: ${e}`)
+    }
+
+});
+
+
 // POST - Create a document
 app.post("/db/:db/document/:id", async(req, res, next) => {
     const dbToUse = req.params.db;
@@ -113,7 +133,7 @@ app.post("/db/:db/document/:id", async(req, res, next) => {
         if (newDocument.ok) {
             res.send(`Document was created ${documentId}`)
         }
-        
+
     } catch(e) {
         console.log(`Error creating document ${documentId}: ${e}`)
         next(`Error creating document ${documentId}: ${e}`)
