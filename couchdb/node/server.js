@@ -187,8 +187,6 @@ app.delete("/db/:db/document/:id", async(req, res, next) => {
 
         let deletedDocument = await db.destroy(documentId, documentRevID);
 
-        console.log(deletedDocument)
-
         if (deletedDocument.ok) {
             res.send(`Document was deleted: ${deletedDocument}`)
         }
