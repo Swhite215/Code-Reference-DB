@@ -117,6 +117,38 @@ app.get("/db/:db/document/:id", async(req, res, next) => {
 
 });
 
+// GET - Search for a Document
+app.get("/db/:db/query/document", async(req, res, next) => {
+    const dbToUse = req.params.db;
+
+    const db = nano.use(dbToUse);
+
+    const query = {
+        selector: {
+            name: {"$eq": "Titan"},
+            stamina: {"$gt": 125}
+        },
+        fields: ["name", "health", "stamina", "atk", "items"],
+        limit: 100
+    }
+
+    try {
+        let matchingDocuments = await db.find(query);
+
+        console.log(matchingDocuments)
+      
+        if (matchingDocuments.docs.length > 0) {
+            res.send(matchingDocuments.docs)
+        } else {
+            res.send("No matching documents found.")
+        }
+
+    } catch(e) {
+        console.log(`Error searching documents: ${e}`)
+        next(`Error searching document: ${e}`)
+    }
+
+});
 
 // POST - Create a document
 app.post("/db/:db/document/:id", async(req, res, next) => {
@@ -137,6 +169,33 @@ app.post("/db/:db/document/:id", async(req, res, next) => {
     } catch(e) {
         console.log(`Error creating document ${documentId}: ${e}`)
         next(`Error creating document ${documentId}: ${e}`)
+    }
+
+});
+
+// DELETE - DEELTE a Document
+app.delete("/db/:db/document/:id", async(req, res, next) => {
+    const dbToUse = req.params.db;
+    const documentId = req.params.id;
+
+    const db = nano.use(dbToUse);
+
+    try {
+        let documentToDelete = await db.get(documentId);
+    
+        let documentRevID = documentToDelete._rev;
+
+        let deletedDocument = await db.destroy(documentId, documentRevID);
+
+        console.log(deletedDocument)
+
+        if (deletedDocument.ok) {
+            res.send(`Document was deleted: ${deletedDocument}`)
+        }
+
+    } catch(e) {
+        console.log(`Error deleting document ${documentId}: ${e}`)
+        next(`Error deleting document ${documentId}: ${e}`)
     }
 
 });
