@@ -11,14 +11,15 @@ app.use(express.json()); //Allows the use of middleware in the request pipeline
 //Handlers
 
 // POST - Create a Database
-app.post("/create/:name", async (req, res, next) => {
-    let dbName = req.params.name;
+app.post("/:name", async (req, res, next) => {
+    console.log(req.params)
+    let dbToCreate = req.params.name;
 
     try {
-        let newDB = await nano.db.create(dbName)
+        let newDB = await nano.db.create(dbToCreate)
         
         if (newDB.ok) {
-            res.send(`New database created: ${dbName}`)
+            res.send(`New database created: ${dbToCreate}`)
         }
 
     } catch(e) {
@@ -28,6 +29,24 @@ app.post("/create/:name", async (req, res, next) => {
 
 
 });
+
+// DELETE - Remove a Database
+app.delete("/:name", async(req, res, next) => {
+    let dbToDelete = req.params.name;
+
+    try {
+        let deletedDB = await nano.db.destroy(dbToDelete);
+        
+        if (deletedDB.ok) {
+            res.send(`Database was deleted: ${deletedDB}`)
+        }
+
+    } catch(e) {
+        console.log(`Error deleting database: ${e}`)
+        next(`Error deleting database: ${e}`)
+    }
+});
+
 
 //Error Handler
 app.use((err, req, res, next) => {
