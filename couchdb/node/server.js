@@ -8,10 +8,28 @@ const nano = require("nano")('http://localhost:5984')
 //Middleware
 app.use(express.json()); //Allows the use of middleware in the request pipeline
 
-//Handlers
+//Database Handlers
+
+// GET - Get info on a single Database
+app.get("/db/:name", async(req, res, next) => {
+    let dbToCheck = req.params.name;
+
+    const db = nano.use(dbToCheck);
+
+    try {
+        let infoDB = await db.info();
+        console.log(infoDB);
+        res.send(infoDB)
+
+    } catch(e) {
+        console.log(`Error getting info for database ${dbToCheck}: ${e}`)
+        next(`Error getting info for database ${dbToCheck}: ${e}`)
+    }
+
+});
 
 // GET - Get all Databases
-app.get("/", async(req, res, next) => {
+app.get("/dbs", async(req, res, next) => {
 
     try {
         let databases = await nano.db.list();
@@ -26,13 +44,13 @@ app.get("/", async(req, res, next) => {
 });
 
 // GET - Get all changes to a Database
-app.get("/changes/:name", async(req, res, next) => {
+app.get("/dbs/changes/:name", async(req, res, next) => {
     let dbToCheck = req.params.name;
 
     try {
-        let changesOfDB = await nano.db.changes(dbToCheck);
-        console.log(changesOfDB);
-        res.send(changesOfDB)
+        let changesToDB = await nano.db.changes(dbToCheck);
+        console.log(changesToDB);
+        res.send(changesToDB)
 
     } catch(e) {
         console.log(`Error getting changes for database ${dbToCheck}: ${e}`)
@@ -43,7 +61,7 @@ app.get("/changes/:name", async(req, res, next) => {
 
 
 // POST - Create a Database
-app.post("/:name", async (req, res, next) => {
+app.post("/dbs/:name", async (req, res, next) => {
     let dbToCreate = req.params.name;
 
     try {
@@ -62,7 +80,7 @@ app.post("/:name", async (req, res, next) => {
 });
 
 // DELETE - Remove a Database
-app.delete("/:name", async(req, res, next) => {
+app.delete("/dbs/:name", async(req, res, next) => {
     let dbToDelete = req.params.name;
 
     try {
