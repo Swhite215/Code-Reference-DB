@@ -25,6 +25,23 @@ app.get("/", async(req, res, next) => {
 
 });
 
+// GET - Get all changes to a Database
+app.get("/changes/:name", async(req, res, next) => {
+    let dbToCheck = req.params.name;
+
+    try {
+        let changesOfDB = await nano.db.changes(dbToCheck);
+        console.log(changesOfDB);
+        res.send(changesOfDB)
+
+    } catch(e) {
+        console.log(`Error getting changes for database ${dbToCheck}: ${e}`)
+        next(`Error getting changes for database ${dbToCheck}: ${e}`)
+    }
+
+});
+
+
 // POST - Create a Database
 app.post("/:name", async (req, res, next) => {
     let dbToCreate = req.params.name;
