@@ -1,0 +1,78 @@
+{
+  "openapi": "3.0.0",
+  "x-api-id": "couchdb",
+  "info": {
+    "version": "1.0.0",
+    "title": "CouchDB"
+  },
+  "servers": [
+    {
+      "url": "http://localhost"
+    }
+  ],
+  "paths": {
+    "/db/{name}": {
+      "get": {
+        "description": "Returns information about the database",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "description": "The name of the database",
+            "schema": {
+              "type": "string",
+              "default": "hi"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/dbs": {
+      "get": {
+        "description": "Returns all databases that are on the server",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/db/{db}/document/{id}": {
+      "get": {
+        "description": "Returns information about the document",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "db",
+            "required": true,
+            "description": "The name of the database",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "The id of the document",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    }
+  }
+}
