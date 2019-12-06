@@ -1,0 +1,14 @@
+{
+  "openapi": "3.0.0",
+  "x-api-id": "couchdb",
+  "info": {
+    "version": "1.0.0",
+    "title": "CouchDB"
+  },
+  "servers": [
+    {
+      "url": "http://localhost"
+    }
+  ],
+  "paths": {}
+}
