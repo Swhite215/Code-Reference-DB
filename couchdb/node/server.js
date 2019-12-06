@@ -1,16 +1,27 @@
-//Requiring Express
+
+// Express
 const express = require("express");
 const app = express();
+const router = express.Router();
 
-//Requiring Nano
+// CouchDB
 const nano = require("nano")('http://localhost:5984')
 
-//Middleware
-app.use(express.json()); //Allows the use of middleware in the request pipeline
+// Middleware
+app.use(express.json());
+const swaggerUI = require("swagger-ui-express");
+const swaggerDocument = require("./swagger_ui.json");
 
-//Database Handlers
+// Swagger
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+app.use('/api/v1', router)
 
-// GET - Get info on a single Database
+/*
+ * @oas [get] /db/{name}
+ * description: "Returns information about the database"
+ * parameters:
+ *   - (path) name=hi* {String} The name of the database
+*/
 app.get("/db/:name", async(req, res, next) => {
     let dbToCheck = req.params.name;
 
@@ -28,7 +39,10 @@ app.get("/db/:name", async(req, res, next) => {
 
 });
 
-// GET - Get all Databases
+/*
+ * @oas [get] /dbs
+ * description: "Returns all databases that are on the server"
+*/
 app.get("/dbs", async(req, res, next) => {
 
     try {
@@ -43,7 +57,6 @@ app.get("/dbs", async(req, res, next) => {
 
 });
 
-// GET - Get all changes to a Database
 app.get("/dbs/changes/:name", async(req, res, next) => {
     let dbToCheck = req.params.name;
 
@@ -59,8 +72,6 @@ app.get("/dbs/changes/:name", async(req, res, next) => {
 
 });
 
-
-// POST - Create a Database
 app.post("/dbs/:name", async (req, res, next) => {
     let dbToCreate = req.params.name;
 
@@ -79,7 +90,7 @@ app.post("/dbs/:name", async (req, res, next) => {
 
 });
 
-// DELETE - Remove a Database
+
 app.delete("/dbs/:name", async(req, res, next) => {
     let dbToDelete = req.params.name;
 
@@ -96,9 +107,13 @@ app.delete("/dbs/:name", async(req, res, next) => {
     }
 });
 
-//Document Handlers
-
-// GET - Get a Document
+/*
+ * @oas [get] /db/{db}/document/{id}
+ * description: "Returns information about the document"
+ * parameters:
+ *   - (path) db=* {String} The name of the database
+ *   - (path) id= {String} The id of the document
+*/
 app.get("/db/:db/document/:id", async(req, res, next) => {
     const dbToUse = req.params.db;
     const documentId = req.params.id;
@@ -117,7 +132,6 @@ app.get("/db/:db/document/:id", async(req, res, next) => {
 
 });
 
-// GET - Search for a Document
 app.get("/db/:db/query/document", async(req, res, next) => {
     const dbToUse = req.params.db;
 
@@ -150,7 +164,6 @@ app.get("/db/:db/query/document", async(req, res, next) => {
 
 });
 
-// POST - Create a document
 app.post("/db/:db/document/:id", async(req, res, next) => {
     const dbToUse = req.params.db;
     const documentId = req.params.id;
@@ -173,7 +186,6 @@ app.post("/db/:db/document/:id", async(req, res, next) => {
 
 });
 
-// DELETE - DEELTE a Document
 app.delete("/db/:db/document/:id", async(req, res, next) => {
     const dbToUse = req.params.db;
     const documentId = req.params.id;
@@ -198,7 +210,6 @@ app.delete("/db/:db/document/:id", async(req, res, next) => {
 
 });
 
-//Error Handler
 app.use((err, req, res, next) => {
 
    console.log("HIT ERROR HANLDER")
@@ -206,10 +217,8 @@ app.use((err, req, res, next) => {
    res.status(500).send(err)
 });
 
-// PORT - Environment Variable
-const port = process.env.PORT || 3000; //Use environment variable or port 3000
+const port = process.env.PORT || 3000;
 
-//Listen on a Port
 app.listen(port, () => {
     console.log(`Listening on Port: ${port}`);
 });
