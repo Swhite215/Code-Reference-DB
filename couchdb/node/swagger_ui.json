@@ -7,22 +7,62 @@
   },
   "servers": [
     {
-      "url": "http://localhost"
+      "url": "https://localhost:3000"
     }
   ],
   "paths": {
     "/db/{name}": {
       "get": {
-        "description": "Returns information about the database",
+        "description": "Returns information about the CouchDB database.",
         "parameters": [
           {
             "in": "path",
             "name": "name",
             "required": true,
-            "description": "The name of the database",
+            "description": "The name of the CouchDB database.",
             "schema": {
               "type": "string",
-              "default": "hi"
+              "default": "test"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "post": {
+        "description": "Creates a new CouchDB database.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "description": "The name of the CouchDB database to create.",
+            "schema": {
+              "type": "string",
+              "default": "test"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "delete": {
+        "description": "Deletes a CouchDB database.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "description": "The name of the CouchDB database to delete.",
+            "schema": {
+              "type": "string",
+              "default": "test"
             }
           }
         ],
@@ -35,7 +75,29 @@
     },
     "/dbs": {
       "get": {
-        "description": "Returns all databases that are on the server",
+        "description": "Returns all CouchDB Databases that are on the server.",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/db/changes/{name}": {
+      "get": {
+        "description": "Returns information about the changes to a CouchDB database.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "description": "The name of the CouchDB database.",
+            "schema": {
+              "type": "string",
+              "default": "test"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response"
@@ -45,31 +107,142 @@
     },
     "/db/{db}/document/{id}": {
       "get": {
-        "description": "Returns information about the document",
+        "description": "Returns information about a specific document.",
         "parameters": [
           {
             "in": "path",
             "name": "db",
             "required": true,
-            "description": "The name of the database",
+            "description": "The name of the CouchDB database.",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "default": "test"
             }
           },
           {
             "in": "path",
             "name": "id",
             "required": true,
-            "description": "The id of the document",
+            "description": "The id of the document.",
             "schema": {
               "type": "string",
-              "default": ""
+              "default": "1"
             }
           }
         ],
         "responses": {
           "200": {
             "description": "Successful response"
+          }
+        }
+      },
+      "post": {
+        "description": "Creates a new document within the CouchDB database.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "db",
+            "required": true,
+            "description": "The name of the CouchDB database where the document will be created.",
+            "schema": {
+              "type": "string",
+              "default": "test"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "The ID of the document to be created.",
+            "schema": {
+              "type": "string",
+              "default": "doc1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "delete": {
+        "description": "Deletes a document within a CouchDB database.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "db",
+            "required": true,
+            "description": "The name of the CouchDB database where the document exists.",
+            "schema": {
+              "type": "string",
+              "default": "test"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "The ID of the document to be deleted.",
+            "schema": {
+              "type": "string",
+              "default": "doc1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/db/{db}/query/document": {
+      "get": {
+        "description": "Searches for documents that meet query criteria.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "db",
+            "required": true,
+            "description": "The name of the CouchDB database.",
+            "schema": {
+              "type": "string",
+              "default": "test"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "selector",
+                  "fields"
+                ],
+                "properties": {
+                  "selector": {
+                    "type": "object",
+                    "description": "The parameters to search documents by."
+                  },
+                  "fields": {
+                    "type": "string",
+                    "description": "An array of fields to include in returned documents."
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "The number of documents to return."
+                  }
+                }
+              }
+            }
           }
         }
       }
