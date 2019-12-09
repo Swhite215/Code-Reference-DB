@@ -65,7 +65,7 @@ app.get("/dbs", async(req, res, next) => {
  * parameters:
  *   - (path) name=test* {String} The name of the CouchDB database.
 */
-app.get("/dbs/changes/:name", async(req, res, next) => {
+app.get("/db/changes/:name", async(req, res, next) => {
     let dbToCheck = req.params.name;
 
     try {
@@ -86,7 +86,7 @@ app.get("/dbs/changes/:name", async(req, res, next) => {
  * parameters:
  *   - (path) name=test* {String} The name of the CouchDB database to create.
 */
-app.post("/dbs/:name", async (req, res, next) => {
+app.post("/db/:name", async (req, res, next) => {
     let dbToCreate = req.params.name;
 
     try {
