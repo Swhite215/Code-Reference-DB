@@ -16,7 +16,7 @@ app.use(express.json());
  * @api {get} /db/:name Get specific CouchDB database.
  * @apiVersion 0.1.0
  * 
- * @apiName GetDatabase
+ * @apiName Get_Database
  * @apiGroup CouchDB Database Endpoints
  *
  * @apiParam {String} name Unique name of database.
@@ -61,7 +61,7 @@ app.get("/db/:name", async(req, res, next) => {
  * @api {get} /dbs Get list of CouchDB databases on server.
  * @apiVersion 0.1.0
  * 
- * @apiName GetDatabases
+ * @apiName Get_Databases
  * @apiGroup CouchDB Database Endpoints
  *
  * @apiSuccess {Array} databases String array of databases.
@@ -99,25 +99,34 @@ app.get("/dbs", async(req, res, next) => {
 });
 
 /**
- * @api {get} /db/changes/:name Get list of CouchDB databases on server.
+ * @api {get} /db/changes/:name Get change list of CouchDB database.
  * @apiVersion 0.1.0
  * 
- * @apiName GetDatabases
+ * @apiName Get_Database_Changes
  * @apiGroup CouchDB Database Endpoints
  *
- * @apiSuccess {Array} databases String array of databases.
+ * @apiParam {String} name Unique name of database.
+ * 
+ * @apiSuccess {Object} Changes Object with results array of revision objects for database.
 
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
- *     ["database1", "database2"]
+ *     {
+ *      results: [
+ *          {
+ *              "seq": String,
+ *              "rev": String
+ *          }
+ *      ] 
+ *     }
  *
- * @apiError Databases_Not_Found There are no databases on this server.
+ * @apiError Database_Not_Found The named database was not found.
  *
  * @apiErrorExample Error-Response:
  *     HTTP/1.1 404 Not Found
  *     {
  *       "error": "not_found",
- *       "reason": "No databases found."
+ *       "reason": "Database does not exist."
  *     }
  */
 app.get("/db/changes/:name", async(req, res, next) => {
