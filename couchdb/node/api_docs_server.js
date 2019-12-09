@@ -14,6 +14,8 @@ app.use(express.json());
 
 /**
  * @api {get} /db/:name Get specific CouchDB database.
+ * @apiVersion 0.1.0
+ * 
  * @apiName GetDatabase
  * @apiGroup CouchDB Database Endpoints
  *
@@ -29,7 +31,7 @@ app.use(express.json());
  *       "doc_count": 12
  *     }
  *
- * @apiError DatabaseNotFound The named database was not found.
+ * @apiError Database_Not_Found The named database was not found.
  *
  * @apiErrorExample Error-Response:
  *     HTTP/1.1 404 Not Found
@@ -55,11 +57,38 @@ app.get("/db/:name", async(req, res, next) => {
 
 });
 
+/**
+ * @api {get} /dbs Get list of CouchDB databases on server.
+ * @apiVersion 0.1.0
+ * 
+ * @apiName GetDatabases
+ * @apiGroup CouchDB Database Endpoints
+ *
+ * @apiSuccess {Array} databases String array of databases.
+
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     ["database1", "database2"]
+ *
+ * @apiError Databases_Not_Found There are no databases on this server.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "not_found",
+ *       "reason": "No databases found."
+ *     }
+ */
 app.get("/dbs", async(req, res, next) => {
 
     try {
         let databases = await nano.db.list();
         console.log(databases);
+
+        if (databases.length == 0) {
+            throw "No databases found";
+        }
+
         res.send(databases)
 
     } catch(e) {
@@ -69,7 +98,29 @@ app.get("/dbs", async(req, res, next) => {
 
 });
 
-app.get("/dbs/changes/:name", async(req, res, next) => {
+/**
+ * @api {get} /db/changes/:name Get list of CouchDB databases on server.
+ * @apiVersion 0.1.0
+ * 
+ * @apiName GetDatabases
+ * @apiGroup CouchDB Database Endpoints
+ *
+ * @apiSuccess {Array} databases String array of databases.
+
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     ["database1", "database2"]
+ *
+ * @apiError Databases_Not_Found There are no databases on this server.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "not_found",
+ *       "reason": "No databases found."
+ *     }
+ */
+app.get("/db/changes/:name", async(req, res, next) => {
     let dbToCheck = req.params.name;
 
     try {
