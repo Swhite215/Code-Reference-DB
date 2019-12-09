@@ -1,0 +1,21 @@
+Getting Started with Swagger
+    1. Install Swagger UI Express
+        - npm i swagger-ui-express -S
+    2. Add a Endpoint for API Documentation
+        - const swaggerUI = require("swagger-ui-express");
+        - const swaggerDocument = require("./swagger.json");
+        - app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+    3. Install OAS
+        - npm i oas -g
+    4. Init to Create Base Config File
+        - oas init
+        - JSON File: swaggerBase.json
+        - OPTIONAL: oas login
+    5. Write Comments in Open API Specification
+        - Start With: /* oas [method] path/to/endpoint ... */
+    6. Generate swagger.json
+        - oas generate > swagger.json
+    7. Run the Server
+        - node server.js
+    8. View the API Documentation
+        - localhost:PORT/api-docs
