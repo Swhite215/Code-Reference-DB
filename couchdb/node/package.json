@@ -11,7 +11,9 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "oas generate > swagger_ui.json && node server.js"
+    "start": "node server.js",
+    "swagger": "oas generate > swagger_ui.json && node swagger_server.js",
+    "api-docs": "node server.js"
   },
   "author": "",
   "license": "ISC"
