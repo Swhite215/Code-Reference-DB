@@ -72,7 +72,7 @@ app.get("/db/:name", async(req, res, next) => {
  *
  * @apiError Databases_Not_Found There are no databases on this server.
  *
- * @apiErrorExample Error-Response:
+ * @apiErrorExample Error-Response-404:
  *     HTTP/1.1 404 Not Found
  *     {
  *       "error": "not_found",
@@ -122,7 +122,7 @@ app.get("/dbs", async(req, res, next) => {
  *
  * @apiError Database_Not_Found The named database was not found.
  *
- * @apiErrorExample Error-Response:
+ * @apiErrorExample Error-Response-404:
  *     HTTP/1.1 404 Not Found
  *     {
  *       "error": "not_found",
@@ -144,7 +144,39 @@ app.get("/db/changes/:name", async(req, res, next) => {
 
 });
 
-app.post("/dbs/:name", async (req, res, next) => {
+/**
+ * @api {post} /db/:name Create a CouchDB database.
+ * @apiVersion 0.1.0
+ * 
+ * @apiName Create_Database
+ * @apiGroup CouchDB Database Endpoints
+ *
+ * @apiParam {String} name Unique name of database.
+ * 
+ * @apiSuccess {Object} Success Confirmation database was created.
+
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     { "ok": true}
+ *
+ * @apiError Database_Already_Exists The database already exists.
+ *
+ * @apiErrorExample Error-Response-412:
+ *     HTTP/1.1 412 Precondition Failed
+ *     {
+ *       "error": "file_exists",
+ *       "reason": "The database could not be created, the file already exists."
+ *     }
+ * @apiError Illegal_Database_Name The database name is invalid.
+ *
+ * @apiErrorExample Error-Response:-400
+ *     HTTP/1.1 400 Bad Request
+ *     {
+ *       "error": "illegal_database_name",
+ *       "reason": "Name: '1'. Only lowercase characters (a-z), digits (0-9), and any of the characters _, $, (, ), +, -, and / are allowed. Must begin with a letter."
+ *     }
+ */
+app.post("/db/:name", async (req, res, next) => {
     let dbToCreate = req.params.name;
 
     try {
