@@ -152,7 +152,7 @@ app.get("/db/:db/document/:id", async(req, res, next) => {
 });
 
 /*
- * @oas [get] /db/{db}/query/document
+ * @oas [get] /db/{db}/document/query
  * description: "Searches for documents that meet query criteria."
  * parameters:
  *   - (path) db=test* {String} The name of the CouchDB database.
@@ -160,7 +160,7 @@ app.get("/db/:db/document/:id", async(req, res, next) => {
  *   - (body) fields* {String} An array of fields to include in returned documents.
  *   - (body) limit {Integer:int32} The number of documents to return.
 */
-app.get("/db/:db/query/document", async(req, res, next) => {
+app.get("/db/:db/document/query", async(req, res, next) => {
     const dbToUse = req.params.db;
 
     const db = nano.use(dbToUse);
