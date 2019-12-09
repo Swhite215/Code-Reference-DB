@@ -194,6 +194,30 @@ app.post("/db/:name", async (req, res, next) => {
 
 });
 
+/**
+ * @api {delete} /db/:name Delete a CouchDB database.
+ * @apiVersion 0.1.0
+ * 
+ * @apiName Delete_Database
+ * @apiGroup CouchDB Database Endpoints
+ *
+ * @apiParam {String} name Unique name of database.
+ * 
+ * @apiSuccess {Object} Success Confirmation database was deleted.
+
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     { "ok": true}
+ *
+ * @apiError Database_Not_Found The named database was not found.
+ *
+ * @apiErrorExample Error-Response-404:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "not_found",
+ *       "reason": "Database does not exist."
+ *     }
+ */
 app.delete("/db/:name", async(req, res, next) => {
     let dbToDelete = req.params.name;
 
@@ -210,6 +234,37 @@ app.delete("/db/:name", async(req, res, next) => {
     }
 });
 
+/**
+ * @api {get} /db/:db/document/:id Get specific document in CouchDB database.
+ * @apiVersion 0.1.0
+ * 
+ * @apiName Get_Document
+ * @apiGroup CouchDB Document Endpoints
+ *
+ * @apiParam {String} db Unique name of database.
+ * @apiParam {String} id Unique id of document.
+ *
+ * @apiSuccess {String} _id ID of the document.
+ * @apiSuccess {String} _rev Current revision of the document.
+ * @apiSuccess {String} param Parameter of the document (there may be multiple).
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "_id": String,
+ *       "_rev": String,
+ *       "param": String,Number,Array,Object,Boolean
+ *     }
+ *
+ * @apiError Database_Not_Found The named document was not found.
+ *
+ * @apiErrorExample Error-Response-404:
+ *     HTTP/1.1 404 Object Not Found
+ *     {
+ *       "error": "not_found",
+ *       "reason": "missing"
+ *     }
+ */
 app.get("/db/:db/document/:id", async(req, res, next) => {
     const dbToUse = req.params.db;
     const documentId = req.params.id;
