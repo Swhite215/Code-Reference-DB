@@ -20,9 +20,9 @@ app.use('/api/v1', router)
 
 /*
  * @oas [get] /db/{name}
- * description: "Returns information about the database"
+ * description: "Returns information about the CouchDB database."
  * parameters:
- *   - (path) name=hi* {String} The name of the database
+ *   - (path) name=test {String} The name of the CouchDB database.
 */
 app.get("/db/:name", async(req, res, next) => {
     let dbToCheck = req.params.name;
@@ -43,7 +43,7 @@ app.get("/db/:name", async(req, res, next) => {
 
 /*
  * @oas [get] /dbs
- * description: "Returns all databases that are on the server"
+ * description: "Returns all CouchDB Databases that are on the server."
 */
 app.get("/dbs", async(req, res, next) => {
 
@@ -59,6 +59,12 @@ app.get("/dbs", async(req, res, next) => {
 
 });
 
+/*
+ * @oas [get] /db/changes/{name}
+ * description: "Returns information about the changes to a CouchDB database."
+ * parameters:
+ *   - (path) name=test* {String} The name of the CouchDB database.
+*/
 app.get("/dbs/changes/:name", async(req, res, next) => {
     let dbToCheck = req.params.name;
 
@@ -74,6 +80,12 @@ app.get("/dbs/changes/:name", async(req, res, next) => {
 
 });
 
+/*
+ * @oas [post] /db/{name}
+ * description: "Creates a new CouchDB database."
+ * parameters:
+ *   - (path) name=test* {String} The name of the CouchDB database to create.
+*/
 app.post("/dbs/:name", async (req, res, next) => {
     let dbToCreate = req.params.name;
 
@@ -92,8 +104,13 @@ app.post("/dbs/:name", async (req, res, next) => {
 
 });
 
-
-app.delete("/dbs/:name", async(req, res, next) => {
+/*
+ * @oas [delete] /db/{name}
+ * description: "Deletes a CouchDB database."
+ * parameters:
+ *   - (path) name=test {String} The name of the CouchDB database to delete.
+*/
+app.delete("/db/:name", async(req, res, next) => {
     let dbToDelete = req.params.name;
 
     try {
@@ -111,10 +128,10 @@ app.delete("/dbs/:name", async(req, res, next) => {
 
 /*
  * @oas [get] /db/{db}/document/{id}
- * description: "Returns information about the document"
+ * description: "Returns information about a specific document."
  * parameters:
- *   - (path) db=* {String} The name of the database
- *   - (path) id= {String} The id of the document
+ *   - (path) db=test* {String} The name of the CouchDB database.
+ *   - (path) id=1 {String} The id of the document.
 */
 app.get("/db/:db/document/:id", async(req, res, next) => {
     const dbToUse = req.params.db;
@@ -134,6 +151,15 @@ app.get("/db/:db/document/:id", async(req, res, next) => {
 
 });
 
+/*
+ * @oas [get] /db/{db}/query/document
+ * description: "Searches for documents that meet query criteria."
+ * parameters:
+ *   - (path) db=test* {String} The name of the CouchDB database.
+ *   - (body) selector* {Object} The parameters to search documents by.
+ *   - (body) fields* {String} An array of fields to include in returned documents.
+ *   - (body) limit {Integer:int32} The number of documents to return.
+*/
 app.get("/db/:db/query/document", async(req, res, next) => {
     const dbToUse = req.params.db;
 
@@ -166,6 +192,13 @@ app.get("/db/:db/query/document", async(req, res, next) => {
 
 });
 
+/*
+ * @oas [post] /db/{db}/document/{id}
+ * description: "Creates a new document within the CouchDB database."
+ * parameters:
+ *   - (path) db=test* {String} The name of the CouchDB database where the document will be created.
+ *   - (path) id=doc1* {String} The ID of the document to be created.
+*/
 app.post("/db/:db/document/:id", async(req, res, next) => {
     const dbToUse = req.params.db;
     const documentId = req.params.id;
@@ -188,6 +221,13 @@ app.post("/db/:db/document/:id", async(req, res, next) => {
 
 });
 
+/*
+ * @oas [delete] /db/{db}/document/{id}
+ * description: "Deletes a document within a CouchDB database."
+ * parameters:
+ *   - (path) db=test* {String} The name of the CouchDB database where the document exists.
+ *   - (path) id=doc1* {String} The ID of the document to be deleted.
+*/
 app.delete("/db/:db/document/:id", async(req, res, next) => {
     const dbToUse = req.params.db;
     const documentId = req.params.id;
@@ -219,8 +259,10 @@ app.use((err, req, res, next) => {
    res.status(500).send(err)
 });
 
+// PORT of Server
 const port = process.env.PORT || 3000;
 
+// Create HTTPS Server Using OpenSSL Certificate and Key
 https.createServer({
     key: fs.readFileSync('server.key'),
     cert: fs.readFileSync('server.cert')
