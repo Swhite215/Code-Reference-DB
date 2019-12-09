@@ -4,6 +4,7 @@ const express = require("express");
 const app = express();
 const https = require("https")
 const fs = require("fs")
+const path = require("path")
 
 // CouchDB
 const nano = require("nano")('http://localhost:5984')
@@ -11,6 +12,32 @@ const nano = require("nano")('http://localhost:5984')
 // Middleware
 app.use(express.json());
 
+/**
+ * @api {get} /db/:name Get specific CouchDB database.
+ * @apiName GetDatabase
+ * @apiGroup CouchDB Database Endpoints
+ *
+ * @apiParam {String} name Unique name of database.
+ *
+ * @apiSuccess {String} db_name Name of the database.
+ * @apiSuccess {Integer} doc_count Number of documents stored in database.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "db_name": "name",
+ *       "doc_count": 12
+ *     }
+ *
+ * @apiError DatabaseNotFound The named database was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "not_found",
+ *       "reason": "Database does not exist."
+ *     }
+ */
 app.get("/db/:name", async(req, res, next) => {
     let dbToCheck = req.params.name;
 
@@ -187,6 +214,10 @@ app.delete("/db/:db/document/:id", async(req, res, next) => {
 
 });
 
+// Api Documentation
+app.use("/api-docs", express.static(path.join(__dirname, "apidoc")))
+
+// Error Handler
 app.use((err, req, res, next) => {
 
    console.log("HIT ERROR HANLDER")
