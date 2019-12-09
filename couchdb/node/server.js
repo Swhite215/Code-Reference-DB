@@ -3,6 +3,8 @@
 const express = require("express");
 const app = express();
 const router = express.Router();
+const https = require("https")
+const fs = require("fs")
 
 // CouchDB
 const nano = require("nano")('http://localhost:5984')
@@ -219,6 +221,9 @@ app.use((err, req, res, next) => {
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
+https.createServer({
+    key: fs.readFileSync('server.key'),
+    cert: fs.readFileSync('server.cert')
+}, app).listen(port, () => {
     console.log(`Listening on Port: ${port}`);
 });
