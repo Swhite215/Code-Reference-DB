@@ -1,5 +1,5 @@
 {
-  "name": "node",
+  "name": "couchdb_experimentation",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -13,8 +13,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "swagger": "oas generate > swagger_ui.json && node swagger_server.js",
-    "api-docs": "node server.js"
+    "api-docs": "apidoc -f api_docs_server.js -o apidoc/ && node api_docs_server.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "apidoc": {
+    "name": "CouchDB ApiDoc Documentation",
+    "title": "CouchDB ApiDoc Documentation",
+    "url": "https://localhost:3000",
+    "description": "CouchDB ApiDoc Documentation"
+  }
 }
