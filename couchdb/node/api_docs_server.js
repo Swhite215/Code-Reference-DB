@@ -167,6 +167,7 @@ app.get("/db/changes/:name", async(req, res, next) => {
  *       "error": "file_exists",
  *       "reason": "The database could not be created, the file already exists."
  *     }
+ * 
  * @apiError Illegal_Database_Name The database name is invalid.
  *
  * @apiErrorExample Error-Response:-400
@@ -210,7 +211,7 @@ app.post("/db/:name", async (req, res, next) => {
  *     { "ok": true}
  *
  * @apiError Database_Not_Found The named database was not found.
- *
+ * 
  * @apiErrorExample Error-Response-404:
  *     HTTP/1.1 404 Not Found
  *     {
@@ -256,7 +257,7 @@ app.delete("/db/:name", async(req, res, next) => {
  *       "param": String,Number,Array,Object,Boolean
  *     }
  *
- * @apiError Database_Not_Found The named document was not found.
+ * @apiError Document_Not_Found The named document was not found.
  *
  * @apiErrorExample Error-Response-404:
  *     HTTP/1.1 404 Object Not Found
@@ -283,6 +284,62 @@ app.get("/db/:db/document/:id", async(req, res, next) => {
 
 });
 
+/**
+ * @api {get} /db/:db/query/document Get documents that meet criteria in CouchDB database.
+ * @apiVersion 0.1.0
+ * 
+ * @apiName Get_Documents
+ * @apiGroup CouchDB Document Endpoints
+ *
+ * @apiParam {String} db Unique name of database.
+ * @apiParam {Object} query Request Body used to select documents.
+ * @apiParam {Object} query.selector JSON object describing criteria used to select documents.
+ * @apiParam {Integer} query.limit Maximum number of results to return.
+ * @apiParam {Object[]} query.sort Array of objects that influence sort.
+ * @apiParam {String[]} query.fields Array of strings that should be returned in each document.
+ *
+ * @apiSuccess {Object[]} Documents Array of documents that match search criteria.
+ * @apiSuccess {String} Documents.string_param Parameter of the document, identified by fields in search criteria (there may be multiple).
+ * @apiSuccess {Integer} Documents.int_param Parameter of the document, identified by fields in search criteria (there may be multiple).
+ * @apiSuccess {Boolean} Documents.bool_param Parameter of the document, identified by fields in search criteria (there may be multiple).
+ * @apiSuccess {Array} Documents.array_param Parameter of the document, identified by fields in search criteria (there may be multiple).
+ * @apiSuccess {Object} Documents.object_param Parameter of the document, identified by fields in search criteria (there may be multiple).
+ * @apiSuccess {String} bookmark allows you to specify which page of results you require.
+ * @apiSuccess {String} warning Execution warnings.
+ *
+ * @apiSuccessExample Success-Response-200:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "docs": [
+ *          {
+ *              string_param: String,
+ *              int_param: Integer,
+ *              bool_param: Boolean,
+ *              array_param: Array,
+ *              object_param: Object
+ *          }
+ *      ],
+ *      "bookmark": String,
+ *      "warning": String
+ *     }
+ * 
+ * @apiSuccessExample Success-Response-204:
+ *     HTTP/1.1 204 No Content
+ *     {
+ *       "docs": [],
+ *      "bookmark": 'nil',
+ *      "warning": 'no matching index found, create an index to optimize query'
+ *     }
+ *
+ * @apiError Database_Not_Found The named database was not found.
+ *
+ * @apiErrorExample Error-Response-404:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "not_found",
+ *       "reason": "Database does not exist."
+ *     }
+ */
 app.get("/db/:db/query/document", async(req, res, next) => {
     const dbToUse = req.params.db;
 
@@ -299,13 +356,11 @@ app.get("/db/:db/query/document", async(req, res, next) => {
 
     try {
         let matchingDocuments = await db.find(query);
-
-        console.log(matchingDocuments)
       
         if (matchingDocuments.docs.length > 0) {
             res.send(matchingDocuments.docs)
         } else {
-            res.send("No matching documents found.")
+            res.status(204).send("No matching documents found.")
         }
 
     } catch(e) {
@@ -315,6 +370,31 @@ app.get("/db/:db/query/document", async(req, res, next) => {
 
 });
 
+/**
+ * @api {post} /db/:db/document/:id Create a document in a CouchDB database.
+ * @apiVersion 0.1.0
+ * 
+ * @apiName Create_Document
+ * @apiGroup CouchDB Document Endpoints
+ *
+ * @apiParam {String} db Unique name of database.
+ * @apiParam {String} id Unique id of document.
+ * 
+ * @apiSuccess {Object} Success Confirmation document was created.
+
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     { "ok": true}
+ *
+ * @apiError Document_Already_Exists The document already exists.
+ *
+ * @apiErrorExample Error-Response-412:
+ *     HTTP/1.1 409 Conflict
+ *     {
+ *       "error": "conflict",
+ *       "reason": "Document update conflict."
+ *     }
+ */
 app.post("/db/:db/document/:id", async(req, res, next) => {
     const dbToUse = req.params.db;
     const documentId = req.params.id;
@@ -337,6 +417,43 @@ app.post("/db/:db/document/:id", async(req, res, next) => {
 
 });
 
+/**
+ * @api {delete} /db/:db/document/:id Delete a document.
+ * @apiVersion 0.1.0
+ * 
+ * @apiName Delete_Document
+ * @apiGroup CouchDB Document Endpoints
+ *
+ * @apiParam {String} db Unique name of database.
+ * @apiParam {String} id Unique id of document.
+ * 
+ * @apiSuccess {Object} Success Confirmation document was deleted.
+
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     { "ok": true
+ *       "id": String,
+ *       "rev": String
+ * }
+ *
+ * @apiError Database_Not_Found The named database was not found.
+ * 
+ * @apiErrorExample Error-Response-404:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "not_found",
+ *       "reason": "Database does not exist."
+ *     }
+ * 
+ * @apiError Document_Already_Deleted The document has already been deleted.
+ * 
+ * @apiErrorExample Error-Response-410:
+ *     HTTP/1.1 410 Gone
+ *     {
+ *       "error": "can_not_delete",
+ *       "reason": "Document was already deleted."
+ *     }
+ */
 app.delete("/db/:db/document/:id", async(req, res, next) => {
     const dbToUse = req.params.db;
     const documentId = req.params.id;
