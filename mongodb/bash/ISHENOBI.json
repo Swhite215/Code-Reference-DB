@@ -1,0 +1,10 @@
+{
+    "name": "Ishenobi",
+    "health": 125,
+    "stamina": 15,
+    "atk": 45,
+    "items": [
+        "Masamune", "Mirasame", "Genji Blade"
+    ],
+    "canFight": true
+}
