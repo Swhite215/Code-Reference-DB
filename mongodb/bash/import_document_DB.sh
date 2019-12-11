@@ -1,0 +1,1 @@
+mongoimport --db=Characters --collection=Heroes --file=ISHENOBI.json
