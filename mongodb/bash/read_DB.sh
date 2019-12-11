@@ -1,2 +1,2 @@
-# Use Read Database Script
+# Use Read Databases Script
 mongo read_DB.js
