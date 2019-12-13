@@ -16,6 +16,6 @@ Getting Started with Swagger
     6. Generate swagger.json
         - oas generate > swagger.json
     7. Run the Server
-        - node server.js
+        - node swagger_server.js
     8. View the API Documentation
         - localhost:PORT/api-docs
