@@ -9,6 +9,8 @@ const path = require("path")
 // CouchDB
 const nano = require("nano")('http://localhost:5984')
 
+const couchDBService = require("./services/couchdb")
+
 // Middleware
 app.use(express.json());
 
@@ -43,12 +45,9 @@ app.use(express.json());
 app.get("/db/:name", async(req, res, next) => {
     let dbToCheck = req.params.name;
 
-    const db = nano.use(dbToCheck);
-
     try {
-        let infoDB = await db.info();
-        console.log(infoDB);
-        res.send(infoDB)
+        let database = await couchDBService.getDatabase(dbToCheck)
+        res.send(database)
 
     } catch(e) {
         console.log(`Error getting info for database ${dbToCheck}: ${e}`)
@@ -493,9 +492,11 @@ app.use((err, req, res, next) => {
 const port = process.env.PORT || 3000;
 
 // Create HTTPS Server Using OpenSSL Certificate and Key
-https.createServer({
-    key: fs.readFileSync('server.key'),
-    cert: fs.readFileSync('server.cert')
+let server = https.createServer({
+    key: fs.readFileSync(path.parse(__filename).dir + '/server.key'),
+    cert: fs.readFileSync(path.parse(__filename).dir + '/server.cert')
 }, app).listen(port, () => {
     console.log(`Listening on Port: ${port}`);
 });
+
+module.exports = server
