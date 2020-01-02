@@ -17,6 +17,12 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 describe("CouchDB Database Endpoints", () => {
     describe('GET /db/:name - Get a Specific Database', () => {
 
+        let getDatabaseStub;
+
+        beforeEach(function() {
+            getDatabaseStub = sinon.stub(couchDBService, "getDatabase")
+        });
+
         afterEach(function() {
             couchDBService.getDatabase.restore();
         })
@@ -30,7 +36,7 @@ describe("CouchDB Database Endpoints", () => {
                 doc_count: 12
             }
     
-            sinon.stub(couchDBService, "getDatabase").withArgs(dbName).resolves(expectedRes)
+            getDatabaseStub.withArgs(dbName).resolves(expectedRes)
     
             chai
                 .request(app)
@@ -45,8 +51,15 @@ describe("CouchDB Database Endpoints", () => {
 
       describe('GET /dbs - Get All Databases', () => {
 
+
+        let getDatabasesStub;
+
+        beforeEach(function() {
+            getDatabasesStub = sinon.stub(couchDBService, "getDatabases")
+        });
+
         afterEach(function() {
-            couchDBService.getDatabases.restore();
+            getDatabasesStub.restore();
         });
     
     
@@ -54,7 +67,7 @@ describe("CouchDB Database Endpoints", () => {
 
             let expectedRes = ["database1", "database2", "database2"]
     
-            sinon.stub(couchDBService, "getDatabases").resolves(expectedRes)
+            getDatabasesStub.resolves(expectedRes)
     
             chai
                 .request(app)
@@ -62,6 +75,41 @@ describe("CouchDB Database Endpoints", () => {
                 .end((err, res) => {
                 res.should.have.status(200);
                 expect(res.body).to.deep.equal(expectedRes);
+                done();
+            });
+        });
+      });
+
+      describe('GET /db/change/:name - Get All Changes to a Database', () => {
+
+        let getDatabaseChangesStub;
+
+        beforeEach(function() {
+            getDatabaseChangesStub = sinon.stub(couchDBService, "getDatabaseChanges")
+        });
+
+        afterEach(function() {
+            getDatabaseChangesStub.restore();
+        });
+    
+    
+        it('should return all changes for a database', done => {
+
+            let expectedRes = {results: [
+                {"seq": "String", "id": "String", "changes": []}
+            ]}
+    
+            let dbName = "heroes";
+
+            getDatabaseChangesStub.withArgs(dbName).resolves(expectedRes)
+    
+            chai
+                .request(app)
+                .get(`/db/changes/${dbName}`)
+                .end((err, res) => {
+                res.should.have.status(200);
+                expect(res.body).to.have.any.keys("results")
+                expect(res.body.results[0]).to.have.any.keys("seq", "id", "changes");
                 done();
             });
         });
