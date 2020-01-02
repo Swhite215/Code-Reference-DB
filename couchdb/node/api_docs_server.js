@@ -131,8 +131,7 @@ app.get("/db/changes/:name", async(req, res, next) => {
     let dbToCheck = req.params.name;
 
     try {
-        let changesToDB = await nano.db.changes(dbToCheck);
-        console.log(changesToDB);
+        let changesToDB = await couchDBService.getDatabaseChanges(dbToCheck)
         res.send(changesToDB)
 
     } catch(e) {
