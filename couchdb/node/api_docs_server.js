@@ -81,8 +81,7 @@ app.get("/db/:name", async(req, res, next) => {
 app.get("/dbs", async(req, res, next) => {
 
     try {
-        let databases = await nano.db.list();
-        console.log(databases);
+        let databases = await couchDBService.getDatabases();
 
         if (databases.length == 0) {
             throw "No databases found";
