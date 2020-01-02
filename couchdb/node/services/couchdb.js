@@ -7,9 +7,21 @@ const getDatabase = async (name) => {
         let infoDB = await db.info();
         return infoDB
     } catch(e) {
-        console.log(`Error getting Database: ${e}`)
+        console.log(`CouchDB Service Error getting Database: ${e}`)
         throw(e)
     }
 }
 
-module.exports = {getDatabase}
+const getDatabases = async () => {
+
+    try {
+        let databases = await nano.db.list();
+        return databases;
+
+    } catch(e) {
+        console.log(`CouchDB Service Error getting Databases: ${e}`)
+        throw(e)
+    }
+}
+
+module.exports = {getDatabase, getDatabases}
