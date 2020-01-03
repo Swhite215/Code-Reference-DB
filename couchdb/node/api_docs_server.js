@@ -177,11 +177,15 @@ app.get("/db/changes/:name", async(req, res, next) => {
 app.post("/db/:name", async (req, res, next) => {
     let dbToCreate = req.params.name;
 
+    console.log(dbToCreate)
+
     try {
-        let newDB = await nano.db.create(dbToCreate)
+        let newDB = await couchDBService.createDatabase(dbToCreate);
+
+        console.log(`Creating NEW DATABASE: ${newDB}`)
         
         if (newDB.ok) {
-            res.send(`New database created: ${dbToCreate}`)
+            res.send(newDB)
         }
 
     } catch(e) {
