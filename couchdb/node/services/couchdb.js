@@ -63,4 +63,17 @@ const deleteDatabase = async (name) => {
     }
 }
 
-module.exports = {getDatabase, getDatabases, getDatabaseChanges, createDatabase, deleteDatabase}
+const getDocument = async (dbToUse, id) => {
+    let db = nano.use(dbToUse);
+
+    try {
+        let document = await db.get(id);
+        return document;
+    } catch(e) {
+        console.log(`CouchDB Service Error getting Document: ${e}`)
+        throw(e)
+    }
+
+}
+
+module.exports = {getDatabase, getDatabases, getDatabaseChanges, createDatabase, deleteDatabase, getDocument}
