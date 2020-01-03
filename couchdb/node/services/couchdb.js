@@ -36,4 +36,16 @@ const getDatabaseChanges = async (name) => {
     }
 }
 
-module.exports = {getDatabase, getDatabases, getDatabaseChanges}
+const createDatabase = async (name) => {
+
+    try {
+        let newDB = await nano.db.create(name);
+        return newDB;
+        
+    } catch(e) {
+        console.log(`CouchDB Service Error creating Database: ${e}`)
+        throw(e)
+    }
+}
+
+module.exports = {getDatabase, getDatabases, getDatabaseChanges, createDatabase}
