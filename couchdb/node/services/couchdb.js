@@ -41,11 +41,26 @@ const createDatabase = async (name) => {
     try {
         let newDB = await nano.db.create(name);
         return newDB;
-        
+
     } catch(e) {
         console.log(`CouchDB Service Error creating Database: ${e}`)
         throw(e)
     }
+
 }
 
-module.exports = {getDatabase, getDatabases, getDatabaseChanges, createDatabase}
+const deleteDatabase = async (name) => {
+
+    try {
+        let deletedDB = await nano.db.destroy(name);
+        console.log("IN DELETE")
+        console.log(deletedDB)
+        return deletedDB;
+
+    } catch(e) {
+        console.log(`CouchDB Service Error deleting Database: ${e}`)
+        throw(e)
+    }
+}
+
+module.exports = {getDatabase, getDatabases, getDatabaseChanges, createDatabase, deleteDatabase}
