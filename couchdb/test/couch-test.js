@@ -114,4 +114,37 @@ describe("CouchDB Database Endpoints", () => {
             });
         });
       });
+
+      describe('POST /db/:name - Create a Database', () => {
+
+        let createDatabaseStub;
+
+        beforeEach(function() {
+            createDatabaseStub = sinon.stub(couchDBService, "createDatabase")
+        });
+
+        afterEach(function() {
+            createDatabaseStub.restore();
+        });
+    
+    
+        it('should create a new database', done => {
+
+            let expectedRes = {"ok": true}
+    
+            let dbName = "test";
+
+            createDatabaseStub.withArgs(dbName).resolves(expectedRes)
+    
+            chai
+                .request(app)
+                .post(`/db/${dbName}`)
+                .end((err, res) => {
+                res.should.have.status(200);
+                expect(res.body).to.have.any.keys("ok")
+                expect(res.body.ok).to.be.true;
+                done();
+            });
+        });
+      });
 });
