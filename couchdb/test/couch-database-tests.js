@@ -6,6 +6,7 @@ const app = require('../node/api_docs_server');
 // Assertions
 const expect = chai.expect;
 const should = chai.should();
+const assert = chai.assert;
 
 // Sinon to Stub Nano in CouchDB Service
 const sinon = require("sinon");
@@ -29,6 +30,9 @@ describe("CouchDB Database Endpoints", () => {
     
     
         it('should return database name and document count', done => {
+
+
+            assert.isFunction(couchDBService.getDatabase);
     
             let dbName = "heroes";
             let expectedRes = {
@@ -65,6 +69,9 @@ describe("CouchDB Database Endpoints", () => {
     
         it('should return all databases on the server', done => {
 
+
+            assert.isFunction(couchDBService.getDatabases);
+
             let expectedRes = ["database1", "database2", "database2"]
     
             getDatabasesStub.resolves(expectedRes)
@@ -94,6 +101,8 @@ describe("CouchDB Database Endpoints", () => {
     
     
         it('should return all changes for a database', done => {
+
+            assert.isFunction(couchDBService.getDatabaseChanges);
 
             let expectedRes = {results: [
                 {"seq": "String", "id": "String", "changes": []}
@@ -130,6 +139,8 @@ describe("CouchDB Database Endpoints", () => {
     
         it('should create a new database', done => {
 
+            assert.isFunction(couchDBService.createDatabase);
+
             let expectedRes = {"ok": true}
     
             let dbName = "test";
@@ -139,6 +150,41 @@ describe("CouchDB Database Endpoints", () => {
             chai
                 .request(app)
                 .post(`/db/${dbName}`)
+                .end((err, res) => {
+                res.should.have.status(200);
+                expect(res.body).to.have.any.keys("ok")
+                expect(res.body.ok).to.be.true;
+                done();
+            });
+        });
+      });
+
+      describe('DELETE /db/:name - Delete a Database', () => {
+
+        let deleteDatabaseStub;
+
+        beforeEach(function() {
+            deleteDatabaseStub = sinon.stub(couchDBService, "deleteDatabase")
+        });
+
+        afterEach(function() {
+            deleteDatabaseStub.restore();
+        });
+    
+    
+        it('should delete a database', done => {
+
+            let expectedRes = {"ok": true}
+    
+            let dbName = "test";
+
+            deleteDatabaseStub.withArgs(dbName).resolves(expectedRes)
+
+           assert.isFunction(couchDBService.deleteDatabase);
+    
+            chai
+                .request(app)
+                .del(`/db/${dbName}`)
                 .end((err, res) => {
                 res.should.have.status(200);
                 expect(res.body).to.have.any.keys("ok")
