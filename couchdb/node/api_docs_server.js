@@ -6,9 +6,10 @@ const https = require("https")
 const fs = require("fs")
 const path = require("path")
 
-// CouchDB
+// CouchDB Server
 const nano = require("nano")('http://localhost:5984')
 
+// Services
 const couchDBService = require("./services/couchdb")
 
 // Middleware
@@ -264,13 +265,9 @@ app.get("/db/:db/document/:id", async(req, res, next) => {
     const dbToUse = req.params.db;
     const documentId = req.params.id;
 
-    const db = nano.use(dbToUse);
-
     try {
-        let document = await db.get(documentId);
-      
+        let document = await couchDBService.getDocument(dbToUse, documentId);
         res.send(document);
-
     } catch(e) {
         console.log(`Error getting document ${documentId}: ${e}`)
         next(`Error getting document ${documentId}: ${e}`)
