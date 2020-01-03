@@ -1,12 +1,13 @@
+// Chai
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
-const app = require('../node/api_docs_server');
-
-// Assertions
 const expect = chai.expect;
 const should = chai.should();
 const assert = chai.assert;
+chai.use(chaiHttp);
+
+// Server
+const app = require("../node/api_docs_server")
 
 // Sinon to Stub Nano in CouchDB Service
 const sinon = require("sinon");
