@@ -22,6 +22,7 @@ describe("CouchDB Document Endpoints", function() {
         let db = "heroes";
         let documentID = "JOXOS";
 
+        // Step Three - Mock
         let getDocumentStub;
 
         let expectedRes = { _id: 'Document ID',
@@ -36,6 +37,7 @@ describe("CouchDB Document Endpoints", function() {
             getDocumentStub.restore();
         })
 
+        // Step One - Service Function
         it("should be a function that returns a document object", function(done) {
             assert.isFunction(couchDBService.getDocument)
 
@@ -49,6 +51,7 @@ describe("CouchDB Document Endpoints", function() {
 
         });
 
+        // Step Two - Endpoint
         it("should be a endpoint that returns a document object", function(done) {
 
             getDocumentStub.withArgs(db, documentID).resolves(expectedRes)
