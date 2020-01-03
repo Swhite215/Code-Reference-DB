@@ -220,11 +220,8 @@ app.delete("/db/:name", async(req, res, next) => {
     let dbToDelete = req.params.name;
 
     try {
-        let deletedDB = await nano.db.destroy(dbToDelete);
-        
-        if (deletedDB.ok) {
-            res.send(`Database was deleted: ${deletedDB}`)
-        }
+        let deletedDB = await couchDBService.deleteDatabase(dbToDelete);
+        res.send(deletedDB);
 
     } catch(e) {
         console.log(`Error deleting database ${dbToDelete}: ${e}`)
