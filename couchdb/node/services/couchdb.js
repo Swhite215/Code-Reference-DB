@@ -76,4 +76,16 @@ const getDocument = async (dbToUse, id) => {
 
 }
 
-module.exports = {getDatabase, getDatabases, getDatabaseChanges, createDatabase, deleteDatabase, getDocument}
+const queryDocuments = async (dbToUse, query) => {
+    const db = nano.use(dbToUse);
+
+    try {
+        let matchingDocuments = await db.find(query);
+        return matchingDocuments;
+    } catch(e) {
+        console.log(`CouchDB Service Error querying Documents: ${e}`);
+        throw(e)
+    }
+}
+
+module.exports = {getDatabase, getDatabases, getDatabaseChanges, createDatabase, deleteDatabase, getDocument, queryDocuments}
