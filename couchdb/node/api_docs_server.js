@@ -332,33 +332,17 @@ app.get("/db/:db/document/:id", async(req, res, next) => {
  *     }
  */
 app.get("/db/:db/query/document", async(req, res, next) => {
+
     const dbToUse = req.params.db;
-
-    const db = nano.use(dbToUse);
-
-    const query = {
-        selector: {
-            name: {"$eq": "Titan"},
-            stamina: {"$gt": 125}
-        },
-        fields: ["name", "health", "stamina", "atk", "items"],
-        limit: 100
-    }
+    const query = req.body;
 
     try {
-        let matchingDocuments = await db.find(query);
-      
-        if (matchingDocuments.docs.length > 0) {
-            res.send(matchingDocuments.docs)
-        } else {
-            res.status(204).send("No matching documents found.")
-        }
-
+        let matchingDocuments = await couchDBService.queryDocuments(dbToUse, query);
+        res.send(matchingDocuments);
     } catch(e) {
         console.log(`Error searching documents: ${e}`)
         next(`Error searching document: ${e}`)
     }
-
 });
 
 /**
