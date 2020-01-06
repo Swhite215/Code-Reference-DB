@@ -132,13 +132,13 @@ describe("CouchDB Document Endpoints", function() {
                 expect(value.docs).to.be.a("array");
                 expect(value.docs.length).to.equal(0);
                 done();
-            });
+            }).catch(err => console.log);
         });
 
         it("should be an endpoint that returns documents that meet search criteria", function(done) {
 
             queryDocumentsStub.withArgs(db, testQuery).resolves(expectedResult);
-            
+
             chai
                 .request(app)
                 .get(`/db/${db}/query/document`)
@@ -150,6 +150,75 @@ describe("CouchDB Document Endpoints", function() {
                     expect(res.body.docs.length).to.be.above(0);
                     done();
                 })
+        });
+    });
+
+    describe("POST /db/:db/document/:id - Creates a document", function() {
+
+        let db = "heroes";
+        let documentID = "ARMADIAS_REED_" + Math.floor(Math.random() * 100);
+        let documentBody = {"name": "Armadias", "health": 200, "stamina": 125, "atk":20, "items": ["Ceaseless Protection Shield", "Reed's Harness", "Air'Go Sword"], "canFight": true, "canHeal": true}
+        let documentIDNew = documentID + "_" + Math.floor(Math.random() * 100);
+
+        let createDocumentStub;
+
+        let expectedResult = {
+            ok: "OK",
+            id: "Document ID",
+            _rev: "Document Revision Number"
+        }
+
+        let errorResult = {
+            reason: "CouchDB Service Error creating Document: Error: Document update conflict."
+        }
+
+        beforeEach(function() {
+            createDocumentStub = sinon.stub(couchDBService, "createDocument");
+        });
+
+        afterEach(function() {
+            createDocumentStub.restore();
+        });
+
+        it("should use a function called createDocument", function() {
+            assert.isFunction(couchDBService.createDocument);
+        });
+
+        it("createDocument should create a document", function(done) {
+
+            createDocumentStub.withArgs(db, documentBody, documentID).resolves(expectedResult);
+
+            couchDBService.createDocument(db, documentBody, documentID).then((value) => {
+                expect(value).to.have.any.keys("ok", "id", "_rev");
+                done();
+            }).catch(err => console.log("HITTING ERROR HERE"));;
+        });
+
+        it("createDocument should return an error if document already exists", function(done) {
+            
+            createDocumentStub.withArgs(db, documentBody, documentID).resolves(errorResult)
+
+            couchDBService.createDocument(db, documentBody, documentID).then((value) => {
+                throw(value)
+            }).catch((err) => {
+                expect(err.reason).to.include("Document update conflict");
+                done();
+            });
+        });
+
+        it("should be an endpoint that cerates a new document", function(done) {
+
+            createDocumentStub.withArgs(db, documentBody, documentID).resolves(expectedResult);
+
+            chai
+                .request(app)
+                .post(`/db/${db}/document/${documentID}`)
+                .send(documentBody)
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    expect(res.body).to.have.any.keys("ok", "id", "_rev");
+                    done();
+                });
         });
     });
 });
