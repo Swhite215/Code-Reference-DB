@@ -359,7 +359,7 @@ app.get("/db/:db/query/document", async(req, res, next) => {
 
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
- *     { "ok": true}
+ *     { "ok": true, "id": Document_ID}
  *
  * @apiError Document_Already_Exists The document already exists.
  *
@@ -373,23 +373,15 @@ app.get("/db/:db/query/document", async(req, res, next) => {
 app.post("/db/:db/document/:id", async(req, res, next) => {
     const dbToUse = req.params.db;
     const documentId = req.params.id;
-
-    let body = req.body;
-
-    const db = nano.use(dbToUse);
+    let documentBody = req.body;
 
     try {
-        let newDocument = await db.insert(body, documentId);
-
-        if (newDocument.ok) {
-            res.send(`Document was created ${documentId}`)
-        }
-
+        let newDocument = await couchDBService.createDocument(dbToUse, documentBody, documentId);
+        res.send(newDocument);
     } catch(e) {
         console.log(`Error creating document ${documentId}: ${e}`)
         next(`Error creating document ${documentId}: ${e}`)
     }
-
 });
 
 /**
