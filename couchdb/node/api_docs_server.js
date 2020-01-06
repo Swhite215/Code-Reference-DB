@@ -46,13 +46,21 @@ app.use(express.json());
 app.get("/db/:name", async(req, res, next) => {
     let dbToCheck = req.params.name;
 
+    if (!dbToCheck) {
+        const error = new Error('missing database name')
+        error.httpStatusCode = 400
+        return next(error)
+    }
+
     try {
         let database = await couchDBService.getDatabase(dbToCheck)
         res.send(database)
 
     } catch(e) {
-        console.log(`Error getting info for database ${dbToCheck}: ${e}`)
-        next(`Error getting info for database ${dbToCheck}: ${e}`)
+        e.httpStatusCode = 500;
+        e.customMsg = `Error getting info for database ${dbToCheck}`;
+
+        return next(e)
     }
 
 });
@@ -91,8 +99,10 @@ app.get("/dbs", async(req, res, next) => {
         res.send(databases)
 
     } catch(e) {
-        console.log(`Error getting databases: ${e}`)
-        next(`Error getting databases: ${e}`)
+        e.httpStatusCode = 500;
+        e.customMsg = `Error getting databases`;
+
+        return next(e)
     }
 
 });
@@ -131,13 +141,21 @@ app.get("/dbs", async(req, res, next) => {
 app.get("/db/changes/:name", async(req, res, next) => {
     let dbToCheck = req.params.name;
 
+    if (!dbToCheck) {
+        const error = new Error('missing database name')
+        error.httpStatusCode = 400
+        return next(error)
+    }
+
     try {
         let changesToDB = await couchDBService.getDatabaseChanges(dbToCheck)
         res.send(changesToDB)
 
     } catch(e) {
-        console.log(`Error getting changes for database ${dbToCheck}: ${e}`)
-        next(`Error getting changes for database ${dbToCheck}: ${e}`)
+        e.httpStatusCode = 500;
+        e.customMsg = `Error getting changes for database ${dbToCheck}`;
+
+        return next(e)
     }
 
 });
@@ -178,6 +196,12 @@ app.get("/db/changes/:name", async(req, res, next) => {
 app.post("/db/:name", async (req, res, next) => {
     let dbToCreate = req.params.name;
 
+    if (!dbToCreate) {
+        const error = new Error('missing database name')
+        error.httpStatusCode = 400
+        return next(error)
+    }
+
     try {
         let newDB = await couchDBService.createDatabase(dbToCreate);
         
@@ -186,8 +210,10 @@ app.post("/db/:name", async (req, res, next) => {
         }
 
     } catch(e) {
-        console.log(`Error creating database ${dbToCreate}: ${e}`)
-        next(`Error creating database ${dbToCreate}: ${e}`)
+        e.httpStatusCode = 500;
+        e.customMsg = `Error creating database ${dbToCreate}`;
+
+        return next(e)
     }
 
 
@@ -220,13 +246,21 @@ app.post("/db/:name", async (req, res, next) => {
 app.delete("/db/:name", async(req, res, next) => {
     let dbToDelete = req.params.name;
 
+    if (!dbToDelete) {
+        const error = new Error('missing database name')
+        error.httpStatusCode = 400
+        return next(error)
+    }
+
     try {
         let deletedDB = await couchDBService.deleteDatabase(dbToDelete);
         res.send(deletedDB);
 
     } catch(e) {
-        console.log(`Error deleting database ${dbToDelete}: ${e}`)
-        next(`Error deleting database ${dbToDelete}: ${e}`)
+        e.httpStatusCode = 500;
+        e.customMsg = `Error deleting database ${dbToDelete}`;
+
+        return next(e)
     }
 });
 
@@ -265,12 +299,20 @@ app.get("/db/:db/document/:id", async(req, res, next) => {
     const dbToUse = req.params.db;
     const documentId = req.params.id;
 
+    if (!dbToUse || !documentId) {
+        const error = new Error('missing database name or document ID')
+        error.httpStatusCode = 400
+        return next(error)
+    }
+
     try {
         let document = await couchDBService.getDocument(dbToUse, documentId);
         res.send(document);
     } catch(e) {
-        console.log(`Error getting document ${documentId}: ${e}`)
-        next(`Error getting document ${documentId}: ${e}`)
+        e.httpStatusCode = 500;
+        e.customMsg = `Error getting document ${documentId}`;
+
+        return next(e)
     }
 
 });
@@ -336,12 +378,20 @@ app.get("/db/:db/query/document", async(req, res, next) => {
     const dbToUse = req.params.db;
     const query = req.body;
 
+    if (!dbToUse || !query) {
+        const error = new Error('missing database name or search query')
+        error.httpStatusCode = 400
+        return next(error)
+    }
+
     try {
         let matchingDocuments = await couchDBService.queryDocuments(dbToUse, query);
         res.send(matchingDocuments);
     } catch(e) {
-        console.log(`Error searching documents: ${e}`)
-        next(`Error searching document: ${e}`)
+        e.httpStatusCode = 500;
+        e.customMsg = `Error searching documents.`;
+
+        return next(e)
     }
 });
 
@@ -375,12 +425,20 @@ app.post("/db/:db/document/:id", async(req, res, next) => {
     const documentId = req.params.id;
     let documentBody = req.body;
 
+    if (!dbToUse || !documentId || documentBody) {
+        const error = new Error('missing database name, document ID, or document body')
+        error.httpStatusCode = 400
+        return next(error)
+    }
+
     try {
         let newDocument = await couchDBService.createDocument(dbToUse, documentBody, documentId);
         res.send(newDocument);
     } catch(e) {
-        console.log(`Error creating document ${documentId}: ${e}`)
-        next(`Error creating document ${documentId}: ${e}`)
+        e.httpStatusCode = 500;
+        e.customMsg = `Error creating document ${documentId}`;
+
+        return next(e)
     }
 });
 
@@ -425,6 +483,13 @@ app.delete("/db/:db/document/:id", async(req, res, next) => {
     const dbToUse = req.params.db;
     const documentId = req.params.id;
 
+
+    if (!dbToUse || !documentId) {
+        const error = new Error('missing database name or document ID')
+        error.httpStatusCode = 400
+        return next(error)
+    }
+
     const db = nano.use(dbToUse);
 
     try {
@@ -439,8 +504,10 @@ app.delete("/db/:db/document/:id", async(req, res, next) => {
         }
 
     } catch(e) {
-        console.log(`Error deleting document ${documentId}: ${e}`)
-        next(`Error deleting document ${documentId}: ${e}`)
+        e.httpStatusCode = 500;
+        e.customMsg = `Error deleting document ${documentId}`;
+
+        return next(e)
     }
 
 });
@@ -451,9 +518,10 @@ app.use("/api-docs", express.static(path.join(__dirname, "apidoc")))
 // Error Handler
 app.use((err, req, res, next) => {
 
-   console.log("HIT ERROR HANLDER")
+   console.log("Custom Server Message: " + err.customMsg);
+   console.log(err);
+   res.status(err.httpStatusCode).json(err)
 
-   res.status(500).send(err)
 });
 
 // PORT of Server
