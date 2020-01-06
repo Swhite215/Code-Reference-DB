@@ -87,5 +87,17 @@ const queryDocuments = async (dbToUse, query) => {
         throw(e)
     }
 }
+const createDocument = async (dbToUse, documentBody, documentId) => {
+    const db = nano.use(dbToUse);
 
-module.exports = {getDatabase, getDatabases, getDatabaseChanges, createDatabase, deleteDatabase, getDocument, queryDocuments}
+    try {
+        let newDocument = await db.insert(documentBody, documentId);
+        console.log(newDocument)
+        return newDocument;
+    } catch(e) {
+        console.log(`CouchDB Service Error creating Document: ${e}`);
+        throw(e)
+    }
+}
+
+module.exports = {getDatabase, getDatabases, getDatabaseChanges, createDatabase, deleteDatabase, getDocument, queryDocuments, createDocument}
