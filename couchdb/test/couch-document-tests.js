@@ -206,7 +206,7 @@ describe("CouchDB Document Endpoints", function() {
             });
         });
 
-        it("should be an endpoint that cerates a new document", function(done) {
+        it("should be an endpoint that creates a new document", function(done) {
 
             createDocumentStub.withArgs(db, documentBody, documentID).resolves(expectedResult);
 
