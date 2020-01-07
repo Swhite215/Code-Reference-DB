@@ -425,7 +425,7 @@ app.post("/db/:db/document/:id", async(req, res, next) => {
     const documentId = req.params.id;
     let documentBody = req.body;
 
-    if (!dbToUse || !documentId || documentBody) {
+    if (!dbToUse || !documentId || !documentBody) {
         const error = new Error('missing database name, document ID, or document body')
         error.httpStatusCode = 400
         return next(error)
@@ -535,4 +535,5 @@ let server = https.createServer({
     console.log(`Listening on Port: ${port}`);
 });
 
+// Export Server for Chai HTTP Testing - Comment This Line When Running
 module.exports = server
