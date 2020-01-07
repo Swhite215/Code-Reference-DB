@@ -6,9 +6,9 @@ const getDatabase = async (name) => {
     try {
         let infoDB = await db.info();
         return infoDB
-    } catch(e) {
+    } catch (e) {
         console.log(`CouchDB Service Error getting Database: ${e}`)
-        throw(e)
+        throw (e)
     }
 }
 
@@ -18,9 +18,9 @@ const getDatabases = async () => {
         let databases = await nano.db.list();
         return databases;
 
-    } catch(e) {
+    } catch (e) {
         console.log(`CouchDB Service Error getting Databases: ${e}`)
-        throw(e)
+        throw (e)
     }
 }
 
@@ -30,9 +30,9 @@ const getDatabaseChanges = async (name) => {
         let changesToDB = await nano.db.changes(name);
         return changesToDB;
 
-    } catch(e) {
+    } catch (e) {
         console.log(`CouchDB Service Error getting Database Changes: ${e}`)
-        throw(e)
+        throw (e)
     }
 }
 
@@ -42,9 +42,9 @@ const createDatabase = async (name) => {
         let newDB = await nano.db.create(name);
         return newDB;
 
-    } catch(e) {
+    } catch (e) {
         console.log(`CouchDB Service Error creating Database: ${e}`)
-        throw(e)
+        throw (e)
     }
 
 }
@@ -53,13 +53,11 @@ const deleteDatabase = async (name) => {
 
     try {
         let deletedDB = await nano.db.destroy(name);
-        console.log("IN DELETE")
-        console.log(deletedDB)
         return deletedDB;
 
-    } catch(e) {
+    } catch (e) {
         console.log(`CouchDB Service Error deleting Database: ${e}`)
-        throw(e)
+        throw (e)
     }
 }
 
@@ -69,9 +67,9 @@ const getDocument = async (dbToUse, id) => {
     try {
         let document = await db.get(id);
         return document;
-    } catch(e) {
+    } catch (e) {
         console.log(`CouchDB Service Error getting Document: ${e}`)
-        throw(e)
+        throw (e)
     }
 
 }
@@ -82,9 +80,9 @@ const queryDocuments = async (dbToUse, query) => {
     try {
         let matchingDocuments = await db.find(query);
         return matchingDocuments;
-    } catch(e) {
+    } catch (e) {
         console.log(`CouchDB Service Error querying Documents: ${e}`);
-        throw(e)
+        throw (e)
     }
 }
 const createDocument = async (dbToUse, documentBody, documentId) => {
@@ -92,12 +90,36 @@ const createDocument = async (dbToUse, documentBody, documentId) => {
 
     try {
         let newDocument = await db.insert(documentBody, documentId);
-        console.log(newDocument)
         return newDocument;
-    } catch(e) {
+    } catch (e) {
         console.log(`CouchDB Service Error creating Document: ${e}`);
+        throw (e)
+    }
+}
+
+const deleteDocument = async (dbToUse, documentId) => {
+    const db = nano.use(dbToUse);
+
+    try {
+        let documentToDelete = await db.get(documentId);
+        let documentRevID = documentToDelete._rev;
+        let deletedDocument = await db.destroy(documentId, documentRevID);
+
+        return deletedDocument;
+    } catch(e) {
+        console.log(`CouchDB Service Error deleting Document: ${e}`)
         throw(e)
     }
 }
 
-module.exports = {getDatabase, getDatabases, getDatabaseChanges, createDatabase, deleteDatabase, getDocument, queryDocuments, createDocument}
+module.exports = { 
+    getDatabase, 
+    getDatabases, 
+    getDatabaseChanges, 
+    createDatabase, 
+    deleteDatabase, 
+    getDocument, 
+    queryDocuments, 
+    createDocument, 
+    deleteDocument 
+}
