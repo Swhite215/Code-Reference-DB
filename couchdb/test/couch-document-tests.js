@@ -191,7 +191,7 @@ describe("CouchDB Document Endpoints", function() {
             couchDBService.createDocument(db, documentBody, documentID).then((value) => {
                 expect(value).to.have.any.keys("ok", "id", "_rev");
                 done();
-            }).catch(err => console.log("HITTING ERROR HERE"));;
+            }).catch(err => console.log);
         });
 
         it("createDocument should return an error if document already exists", function(done) {
@@ -220,5 +220,72 @@ describe("CouchDB Document Endpoints", function() {
                     done();
                 });
         });
+    });
+
+    describe("DELETE /db/:db/document/:id - Deletes a document", function() {
+
+        let db = "heroes";
+        let documentID = "ARMADIAS_REED_54";
+        let nonExistentID = "INVALID DOCUMENT ID";
+
+        let expectedResult = {
+            "ok": "OK",
+            "id": "DOCUMENT ID",
+            "_rev": "DOCUMENT REVISION NUMBER"
+        }
+
+        let errorResult = {
+            reason: "missing"
+        }
+
+        let deleteDocumentStub;
+
+        beforeEach(function() {
+            deleteDocumentStub = sinon.stub(couchDBService, "deleteDocument");
+        });
+
+        afterEach(function() {
+            deleteDocumentStub.restore();
+        });
+       
+        it("should use a function called deleteDocument", function() {
+            assert.isFunction(couchDBService.deleteDocument);
+        });
+
+        it("deleteDocument should delete a document", function(done) {
+
+            deleteDocumentStub.withArgs(db, documentID).resolves(expectedResult);
+
+            couchDBService.deleteDocument(db, documentID).then((value) => {
+                expect(value).to.have.any.keys("ok", "id", "_rev");
+                done();
+            }).catch(err => console.log);
+        });
+
+        it("deleteDocument should return an error if document doesn't exist", function(done) {
+
+            deleteDocumentStub.withArgs(db, nonExistentID).resolves(errorResult);
+
+            couchDBService.deleteDocument(db, nonExistentID).then((value) => {
+                throw(value)
+            }).catch((err) => {
+                expect(err.reason).to.include("missing");
+                done();
+            });
+        });
+
+        it("should be an endpoint that deletes a document", function(done) {
+
+            deleteDocumentStub.withArgs(db, documentID).resolves(expectedResult);
+
+            chai
+                .request(app)
+                .del(`/db/${db}/document/${documentID}`)
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    expect(res.body).to.have.any.keys("ok", "id", "_rev");
+                    done();
+                });
+        })
     });
 });
