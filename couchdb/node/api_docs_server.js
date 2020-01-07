@@ -6,9 +6,6 @@ const https = require("https")
 const fs = require("fs")
 const path = require("path")
 
-// CouchDB Server
-const nano = require("nano")('http://localhost:5984')
-
 // Services
 const couchDBService = require("./services/couchdb")
 
@@ -458,7 +455,7 @@ app.post("/db/:db/document/:id", async(req, res, next) => {
  *     HTTP/1.1 200 OK
  *     { "ok": true
  *       "id": String,
- *       "rev": String
+ *       "_rev": String
  * }
  *
  * @apiError Database_Not_Found The named database was not found.
@@ -490,19 +487,9 @@ app.delete("/db/:db/document/:id", async(req, res, next) => {
         return next(error)
     }
 
-    const db = nano.use(dbToUse);
-
     try {
-        let documentToDelete = await db.get(documentId);
-    
-        let documentRevID = documentToDelete._rev;
-
-        let deletedDocument = await db.destroy(documentId, documentRevID);
-
-        if (deletedDocument.ok) {
-            res.send(`Document was deleted: ${deletedDocument}`)
-        }
-
+        let deletedDocument = await couchDBService.deleteDocument(dbToUse, documentId);
+        res.send(deletedDocument);
     } catch(e) {
         e.httpStatusCode = 500;
         e.customMsg = `Error deleting document ${documentId}`;
