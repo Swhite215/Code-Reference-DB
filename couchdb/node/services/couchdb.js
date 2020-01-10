@@ -85,6 +85,7 @@ const queryDocuments = async (dbToUse, query) => {
         throw (e)
     }
 }
+
 const createDocument = async (dbToUse, documentBody, documentId) => {
     const db = nano.use(dbToUse);
 
