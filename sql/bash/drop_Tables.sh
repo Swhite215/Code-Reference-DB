@@ -1,1 +1,1 @@
-sqlcmd -S 127.0.0.1 -U sa -P 'Password$1234' -i drop_Table.sql
+sqlcmd -S 127.0.0.1 -U sa -P 'Password$1234' -i drop_Tables.sql
