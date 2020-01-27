@@ -1,1 +1,1 @@
-CREATE DATABASE heroes;
+CREATE DATABASE characters;
