@@ -128,6 +128,37 @@ describe("MSSQL Service Functions", function() {
             });
         });
 
+        describe("sqlService.queryDatabases()", function() {
+
+            let sqlQueryDatabasesStub;
+
+            let expectedResult = ["database1", "database2", "database3"];
+
+            beforeEach(function() {
+                sqlQueryDatabasesStub = sinon.stub(sqlService, "dropDatabase");
+            });
+
+            afterEach(function() {
+                sqlQueryDatabasesStub.restore();
+            });
+
+            it("should be a function", function() {
+                assert.isFunction(sqlService.queryDatabases);
+            });
+
+            it("should return an array of databases", function(done) {
+
+                sqlQueryDatabasesStub.resolves(expectedResult);
+
+                sqlService.queryDatabases().then((res) => {
+                    expect(res).to.be.a("array");
+                    expect(res.length).to.be.greaterThan(0);
+                    done();
+                });
+
+            });
+        });
+
     });
 });
 
