@@ -4,7 +4,7 @@ var TYPES = require('tedious').TYPES;
 
 const config = require('./config')
 
-const createTable = async (tableToCreate) => {
+const createTable = (tableToCreate) => {
 
     const connection = new Connection(config);
 
@@ -34,7 +34,82 @@ const createTable = async (tableToCreate) => {
 
 }
 
+const dropTable = (tableToDelete) => {
+    
+    const connection = new Connection(config);
+
+    return new Promise((resolve, reject) => {
+        connection.on('connect', function(err) {
+            if (err) {
+                console.log(`MSSQL Service Error connecting: ${err}`)
+                reject(err)
+            }
+
+            let query = `DROP Table ${tableToDelete}`
+
+            let request = new Request(query, function(err) {
+                if (err) {
+                    console.log(`MSSQL Service Error dropping table: ${err}`)
+                    reject(err)
+                } else {
+                    resolve(`Successfully deleted ${tableToDelete} table!`);
+                }
+            });
+
+            connection.execSql(request);
+        });
+
+    });
+}
+
+const queryTables = async () => {
+
+    const connection = new Connection(config);
+
+    return new Promise((resolve, reject) => {
+        connection.on('connect', function(err) {
+            if (err) {
+                console.log(`MSSQL Service Error connecting: ${err}`)
+                reject(err)
+            }
+
+            let query = `SELECT * FROM INFORMATION_SCHEMA.TABLES`
+            let results = [];
+
+            let request = new Request(query, function(err) {
+                if (err) {
+                    console.log(`MSSQL Service Error retrieving tables.`)
+                    reject(err)
+                } else {
+                    resolve(`Successfully retrieved all tables in database!`);
+                }
+            });
+
+            request.on('row', columns => {
+
+                columns.forEach(column => {
+
+                    if (column.metadata.colName == "TABLE_NAME") {
+                        results.push(column.value);
+                    }
+
+                });
+
+            });
+
+            request.on('doneProc', (rowCount, more) => {
+
+                resolve(results);
+            });
+
+            connection.execSql(request);
+        });
+    });
+}
+
 
 module.exports = {
-    createTable
+    createTable,
+    dropTable,
+    queryTables
 };
