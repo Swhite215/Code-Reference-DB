@@ -18,15 +18,13 @@ describe("MSSQL Service Functions", function() {
 
             let expectedResult = `RESULT: Successfully created ${tableToCreate} table!`;
 
-            let errorResult = `MSSQL Service Error creating table: ${tableToCreate}`;
-
             beforeEach(function() {
                 sqlCreateTableStub = sinon.stub(sqlService, "createTable");
             });
 
             afterEach(function() {
                 sqlCreateTableStub.restore();
-            })
+            });
 
             it("should be a function", function() {
                 assert.isFunction(sqlService.createTable);
@@ -41,17 +39,35 @@ describe("MSSQL Service Functions", function() {
                     done();
                 });
             });
+        });
+
+        describe("sqlService.createTable()", function() {
+
+            let tableToCreate = "testTable";
+
+            let sqlCreateTableStub;
+
+            let errorResult = `There is already an object named '${tableToCreate}'`;
+
+            beforeEach(function() {
+                sqlCreateTableStub = sinon.stub(sqlService, "createTable");
+            });
+
+            afterEach(function() {
+                sqlCreateTableStub.restore();
+            });
 
             it("should return an error if table already exists", function(done) {
-                
-                sqlCreateTableStub.withArgs(tableToCreate).resolves(errorResult);
 
-                sqlService.createTable(tableToCreate).then((res) => {
-                    throw (res)
-                }).catch((e) => {
-                    expect(e).to.contain("MSSQL Service Error");
+                sqlCreateTableStub.withArgs(tableToCreate).throws("error", errorResult)
+
+                try {
+                    sqlService.createTable(tableToCreate)
+                } catch(e) {
+                    expect(e.message).to.contain(`There is already an object named '${tableToCreate}'`);
                     done();
-                });
+                }
+
             });
         });
     });
