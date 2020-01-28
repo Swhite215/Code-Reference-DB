@@ -4,6 +4,34 @@ var TYPES = require('tedious').TYPES;
 
 const config = require('./config')
 
+const createDatabase = (databaseToCreate) => {
+
+    const connection = new Connection(config);
+
+    return new Promise((resolve, reject) => {
+        connection.on('connect', function(err) {
+            if (err) {
+                console.log(`MSSQL Service Error connecting: ${err}`)
+                reject(err);
+            }
+    
+            let query = `CREATE DATABASE ${databaseToCreate}`;
+    
+            let request = new Request(query, function(err) {
+                if (err) {
+                    console.log(`MSSQL Service Error creating database: ${err}`)
+                    reject(err);
+                } else {
+                    resolve(`Successfully created ${databaseToCreate} database!`);
+                }
+            });
+        
+            connection.execSql(request);
+    
+        });
+    });
+}
+
 const createTable = (tableToCreate) => {
 
     const connection = new Connection(config);
@@ -109,6 +137,7 @@ const queryTables = async () => {
 
 
 module.exports = {
+    createDatabase,
     createTable,
     dropTable,
     queryTables
