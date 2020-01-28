@@ -35,7 +35,7 @@ const createDatabase = (databaseToCreate) => {
 const dropDatabase = (databaseToDelete) => {
 
     const connection = new Connection(config);
-    
+
     return new Promise((resolve, reject) => {
         connection.on('connect', function(err) {
             if (err) {
@@ -58,6 +58,52 @@ const dropDatabase = (databaseToDelete) => {
     
         });
     });
+}
+
+const queryDatabases = () => {
+
+    const connection = new Connection(config);
+
+    return new Promise((resolve, reject) => {
+        connection.on('connect', function(err) {
+            if (err) {
+                console.log(`MSSQL Service Error connecting: ${err}`)
+                reject(err)
+            }
+
+            let query = `SELECT name FROM sys.databases`
+            let results = [];
+
+            let request = new Request(query, function(err) {
+                if (err) {
+                    console.log(`MSSQL Service Error retrieving databases.`)
+                    reject(err)
+                } else {
+                    resolve(`Successfully retrieved all databases on server!`);
+                }
+            });
+
+            request.on('row', columns => {
+
+                columns.forEach(column => {
+
+                    if (column.metadata.colName == "name") {
+                        results.push(column.value);
+                    }
+
+                });
+
+            });
+
+            request.on('doneProc', (rowCount, more) => {
+                resolve(results);
+            });
+
+            connection.execSql(request);
+        });
+    });
+
+
 }
 
 const createTable = (tableToCreate) => {
@@ -167,6 +213,7 @@ const queryTables = async () => {
 module.exports = {
     createDatabase,
     dropDatabase,
+    queryDatabases,
     createTable,
     dropTable,
     queryTables
