@@ -1,0 +1,23 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "api_docs_server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node api_docs_server.js",
+    "api-docs": "apidoc -f api_docs_server.js -o apidoc/ && node api_docs_server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "apidoc": {
+    "name": "MSSQL ApiDoc Documentation",
+    "title": "MSSQL ApiDoc Documentation",
+    "url": "https://localhost:3000",
+    "description": "MSSQL ApiDoc Documentation"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "tedious": "^8.0.1"
+  }
+}
