@@ -70,6 +70,64 @@ describe("MSSQL Service Functions", function() {
                 }
             });
         });
+
+        describe("sqlService.dropDatabase()", function() {
+
+            let databaseToDelete = "testDatabase";
+
+            let sqlDropDatabaseStub;
+
+            let expectedResult = `Successfully dropped ${databaseToDelete} database!`;
+
+            beforeEach(function() {
+                sqlDropDatabaseStub = sinon.stub(sqlService, "dropDatabase");
+            });
+
+            afterEach(function() {
+                sqlDropDatabaseStub.restore();
+            });
+
+            it("should be a function", function() {
+                assert.isFunction(sqlService.dropDatabase);
+            });
+
+            it("should drop a database", function(done) {
+
+                sqlDropDatabaseStub.withArgs(databaseToDelete).resolves(expectedResult);
+
+                sqlService.dropDatabase(databaseToDelete).then((res) => {
+                    expect(res).to.contain(`Successfully dropped ${databaseToDelete} database!`);
+                    done();
+                });
+            });
+        });
+
+        describe("sqlService.dropDatabase()", function() {
+            let databaseToDelete = "testDatabase";
+
+            let sqlDropDatabaseStub;
+
+            let errorResult = `MSSQL Service Error dropping database: RequestError: Cannot drop the database 'testDatabase', because it does not exist or you do not have permission.`;
+
+            beforeEach(function() {
+                sqlDropDatabaseStub = sinon.stub(sqlService, "dropDatabase");
+            });
+
+            afterEach(function() {
+                sqlDropDatabaseStub.restore();
+            });
+
+            it("should return an error if database does not exist", function(done) {
+
+                sqlDropDatabaseStub.withArgs(databaseToDelete).rejects("error", errorResult);
+
+                sqlService.dropDatabase(databaseToDelete).catch((e) => {
+                    expect(e.message).to.contain(`Cannot drop the database '${databaseToDelete}'`)
+                    done();
+                });
+            });
+        });
+
     });
 });
 
