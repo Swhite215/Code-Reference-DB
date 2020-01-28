@@ -9,7 +9,7 @@ const sinon = require("sinon");
 const sqlService = require("../services/sqlService");
 
 describe("MSSQL Service Functions", function() {
-    describe("MSSQL Database Operations", function() {
+    describe("MSSQL Table Operations", function() {
         describe("sqlService.createTable()", function() {
 
             let tableToCreate = "testTable";
