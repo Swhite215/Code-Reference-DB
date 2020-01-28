@@ -32,6 +32,34 @@ const createDatabase = (databaseToCreate) => {
     });
 }
 
+const dropDatabase = (databaseToDelete) => {
+
+    const connection = new Connection(config);
+    
+    return new Promise((resolve, reject) => {
+        connection.on('connect', function(err) {
+            if (err) {
+                console.log(`MSSQL Service Error connecting: ${err}`)
+                reject(err);
+            }
+    
+            let query = `DROP DATABASE ${databaseToDelete}`;
+    
+            let request = new Request(query, function(err) {
+                if (err) {
+                    console.log(`MSSQL Service Error dropping database: ${err}`)
+                    reject(err);
+                } else {
+                    resolve(`Successfully dropped ${databaseToDelete} database!`);
+                }
+            });
+        
+            connection.execSql(request);
+    
+        });
+    });
+}
+
 const createTable = (tableToCreate) => {
 
     const connection = new Connection(config);
@@ -138,6 +166,7 @@ const queryTables = async () => {
 
 module.exports = {
     createDatabase,
+    dropDatabase,
     createTable,
     dropTable,
     queryTables
