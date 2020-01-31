@@ -118,6 +118,44 @@ describe("MSSQL Service Functions", function() {
                 });
             })
         });
+
+        describe("sqlService.selectAllRecords()", function() {
+
+            let sqlSelectAllRecordsStub;
+
+            beforeEach(function() {
+                sqlSelectAllRecordsStub = sinon.stub(sqlService, "selectAllRecords");
+            });
+            
+            afterEach(function() {
+                sqlSelectAllRecordsStub.restore();
+            });
+
+            it("should be a function", function() {
+                assert.isFunction(sqlService.selectAllRecords);
+            });
+
+            it("should select and return all records", function(done) {
+
+                sqlSelectAllRecordsStub.withArgs("heroes").resolves([{}, {}, {}])
+
+                sqlService.selectAllRecords("heroes").then((res) => {
+                    expect(res).to.be.a("array");
+                    done()
+                });
+            });
+
+            it("should return an error if no records", function(done) {
+
+                sqlSelectAllRecordsStub.withArgs("test").rejects("error", "No matching records!")
+
+                sqlService.selectAllRecords("test").catch((e) => {
+                    expect(e.message).to.contain("No matching records!");
+                    done()
+                });
+            });
+
+        });
     });
 });
 
