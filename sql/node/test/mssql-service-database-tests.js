@@ -135,7 +135,7 @@ describe("MSSQL Service Functions", function() {
             let expectedResult = ["database1", "database2", "database3"];
 
             beforeEach(function() {
-                sqlQueryDatabasesStub = sinon.stub(sqlService, "dropDatabase");
+                sqlQueryDatabasesStub = sinon.stub(sqlService, "queryDatabases");
             });
 
             afterEach(function() {
