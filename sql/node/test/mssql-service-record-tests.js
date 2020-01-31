@@ -79,6 +79,45 @@ describe("MSSQL Service Functions", function() {
                 });
             });
         });
+
+        describe("sqlService.updateRecord()", function() {
+
+            let id = "Rokh";
+
+            let rokh = {
+                firstname: 'Rokh',
+                health: 1000,
+                stamina: 400,
+                atk: 98,
+                canfight: 1
+            }
+
+            let expectedResult = `Successfully updated ${id} record!`
+
+            let sqlUpdateRecordStub;
+
+            beforeEach(function() {
+                sqlUpdateRecordStub = sinon.stub(sqlService, "updateRecord");
+            });
+            
+            afterEach(function() {
+                sqlUpdateRecordStub.restore();
+            });
+
+            it("should be a function", function() {
+                assert.isFunction(sqlService.updateRecord)
+            });
+
+            it("should update a record", function(done) {
+
+                sqlUpdateRecordStub.withArgs(id, rokh).resolves(expectedResult);
+
+                sqlService.updateRecord(id, rokh).then((res) => {
+                    expect(res).to.contain(`Successfully updated ${id} record!`);
+                    done();
+                });
+            })
+        });
     });
 });
 
