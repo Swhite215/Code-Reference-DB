@@ -209,6 +209,39 @@ const queryTables = async () => {
     });
 }
 
+const insertRecord = (heroObject) => {
+
+    const connection = new Connection(config);
+
+    return new Promise((resolve, reject) => {
+        connection.on('connect', function(err) {
+            if (err) {
+                console.log(`MSSQL Service Error connecting: ${err}`)
+                reject(err);
+            }
+    
+            let query = `INSERT INTO heroes (FirstName, Health, Stamina, Atk, CanFight) VALUES (@name, @health, @stamina, @atk, @canFight)`;
+    
+            let request = new Request(query, function(err) {
+                if (err) {
+                    console.log(`MSSQL Service Error inserting record: ${err}`)
+                    reject(err);
+                } else {
+                    resolve(`Successfully inserted ${heroObject.name} into table!`);
+                }
+            });
+            
+            request.addParameter('name', TYPES.VarChar, heroObject.name);
+            request.addParameter('health', TYPES.Int, heroObject.health);
+            request.addParameter('stamina', TYPES.Int, heroObject.stamina);
+            request.addParameter('atk', TYPES.Int, heroObject.atk);
+            request.addParameter('canFight', TYPES.Bit, heroObject.canFight);
+        
+            connection.execSql(request);
+    
+        });
+    });
+}
 
 module.exports = {
     createDatabase,
@@ -216,5 +249,6 @@ module.exports = {
     queryDatabases,
     createTable,
     dropTable,
-    queryTables
+    queryTables,
+    insertRecord
 };
