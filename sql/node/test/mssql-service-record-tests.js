@@ -145,12 +145,12 @@ describe("MSSQL Service Functions", function() {
                 });
             });
 
-            it("should return an error if no records", function(done) {
+            it("should return an error if table does not exist", function(done) {
 
-                sqlSelectAllRecordsStub.withArgs("test").rejects("error", "No matching records!")
+                sqlSelectAllRecordsStub.withArgs("test").rejects("error", "Invalid object name 'test'.")
 
                 sqlService.selectAllRecords("test").catch((e) => {
-                    expect(e.message).to.contain("No matching records!");
+                    expect(e.message).to.contain("Invalid object name");
                     done()
                 });
             });
