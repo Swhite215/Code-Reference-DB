@@ -243,6 +243,36 @@ const insertRecord = (heroObject) => {
     });
 }
 
+const deleteRecord = (hero) => {
+
+    const connection = new Connection(config);
+
+    return new Promise((resolve, reject) => {
+        connection.on('connect', function(err) {
+            if (err) {
+                console.log(`MSSQL Service Error connecting: ${err}`)
+                reject(err)
+            }
+
+            let query = 'DELETE FROM heroes WHERE FirstName=@name'
+
+            let request = new Request(query, function(err) {
+                if (err) {
+                    console.log(`MSSQL Service Error deleting record: ${err}`)
+                    reject(err)
+                } else {
+                    resolve(`Successfully deleted ${hero} record!`);
+                }
+            });
+
+            request.addParameter('name', TYPES.VarChar, hero);
+
+            connection.execSql(request);
+        });
+
+    });
+}
+
 module.exports = {
     createDatabase,
     dropDatabase,
@@ -250,5 +280,6 @@ module.exports = {
     createTable,
     dropTable,
     queryTables,
-    insertRecord
+    insertRecord,
+    deleteRecord
 };
