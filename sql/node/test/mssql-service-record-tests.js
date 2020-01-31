@@ -47,6 +47,38 @@ describe("MSSQL Service Functions", function() {
                 });
             });
         });
+
+        describe("sqlService.deleteRecord()", function() {
+
+            let hero = "Test"
+
+            let expectedResult = `Successfully deleted ${hero} record!`
+
+            let sqlDeleteRecordStub;
+
+            beforeEach(function() {
+                sqlDeleteRecordStub = sinon.stub(sqlService, "deleteRecord");
+            });
+            
+            afterEach(function() {
+                sqlDeleteRecordStub.restore();
+            });
+            
+
+            it("should be a function", function() {
+                assert.isFunction(sqlService.deleteRecord);
+            });
+
+            it("should delete a record", function(done) {
+
+                sqlDeleteRecordStub.withArgs(hero).resolves(expectedResult);
+                
+                sqlService.deleteRecord(hero).then((res) => {
+                    expect(res).to.contain(`Successfully deleted ${hero} record!`)
+                    done();
+                });
+            });
+        });
     });
 });
 
