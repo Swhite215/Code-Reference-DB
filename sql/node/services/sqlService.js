@@ -331,6 +331,55 @@ const updateRecord = (id, heroObject) => {
     });
 }
 
+const selectAllRecords = (table) => {
+    const connection = new Connection(config);
+
+    return new Promise((resolve, reject) => {
+        connection.on('connect', function(err) {
+            if (err) {
+                console.log(`MSSQL Service Error connecting: ${err}`)
+                reject(err)
+            }
+
+            let query = `SELECT * FROM ${table}`
+            let results = [];
+
+            let request = new Request(query, function(err) {
+                if (err) {
+                    console.log(`MSSQL Service Error retrieving tables: ${err}`)
+                    reject(err)
+                } else {
+                    resolve(`Successfully retrieved all records in database!`);
+                }
+            });
+
+            request.on('row', columns => {
+
+                let heroObject = {}
+
+                columns.forEach(column => {
+                    heroObject[column.metadata.colName] = column.value;
+                });
+
+                results.push(heroObject)
+
+            });
+
+            request.on('doneProc', (rowCount, more) => {
+
+                if (results.length > 0) {
+                    resolve(results)
+                } else {
+                    reject(new Error("No matching records!"))
+                }
+                
+            });
+
+            connection.execSql(request);
+        });
+    });
+}
+
 module.exports = {
     createDatabase,
     dropDatabase,
@@ -340,5 +389,6 @@ module.exports = {
     queryTables,
     insertRecord,
     deleteRecord,
-    updateRecord
+    updateRecord,
+    selectAllRecords
 };
