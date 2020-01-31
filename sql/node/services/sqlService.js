@@ -344,35 +344,24 @@ const selectAllRecords = (table) => {
             let query = `SELECT * FROM ${table}`
             let results = [];
 
-            let request = new Request(query, function(err) {
+            let request = new Request(query, function(err, rowCount, rows) {
                 if (err) {
                     console.log(`MSSQL Service Error retrieving tables: ${err}`)
                     reject(err)
                 } else {
-                    resolve(`Successfully retrieved all records in database!`);
-                }
-            });
+                    
+                    for (let row of rows) {
+                        let heroObject = {};
 
-            request.on('row', columns => {
+                        for (let column of row) {
+                            heroObject[column.metadata.colName] = column.value;
+                        }
 
-                let heroObject = {}
+                        results.push(heroObject)
+                    }
 
-                columns.forEach(column => {
-                    heroObject[column.metadata.colName] = column.value;
-                });
-
-                results.push(heroObject)
-
-            });
-
-            request.on('doneProc', (rowCount, more) => {
-
-                if (results.length > 0) {
                     resolve(results)
-                } else {
-                    reject(new Error("No matching records!"))
                 }
-                
             });
 
             connection.execSql(request);
