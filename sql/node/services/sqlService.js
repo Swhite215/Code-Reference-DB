@@ -273,6 +273,64 @@ const deleteRecord = (hero) => {
     });
 }
 
+const updateRecord = (id, heroObject) => {
+
+    // Dynamic Creation of Update Query
+    let tableParameters = ["FirstName", "Health", "Stamina", "Atk", "CanFight"]
+    let parametersToUpdate = Object.keys(heroObject)
+
+    let parametersWithValues = [];
+
+    for (let parameter of tableParameters) {
+        for (let updateParam of parametersToUpdate) {
+            if (parameter.toLowerCase().indexOf(updateParam.toLowerCase()) > -1) {
+                parametersWithValues.push(parameter);
+            }
+        }
+    }
+
+    let query = 'UPDATE heroes SET ';
+
+    for (var i = 0; i < parametersWithValues.length; i++) {
+        if (i == parametersWithValues.length - 1) {
+            query = query + `${parametersWithValues[i]} = @${parametersWithValues[i].toLowerCase()} `
+        } else {
+            query = query + `${parametersWithValues[i]} = @${parametersWithValues[i].toLowerCase()}, `
+        }
+    }
+
+    query = query + "WHERE FirstName = @firstname"
+
+    const connection = new Connection(config);
+
+    return new Promise((resolve, reject) => {
+        connection.on('connect', function(err) {
+            if (err) {
+                console.log(`MSSQL Service Error connecting: ${err}`)
+                reject(err)
+            }
+
+            let request = new Request(query, function(err) {
+                if (err) {
+                    console.log(`MSSQL Service Error updating record: ${err}`)
+                    reject(err)
+                } else {
+                    resolve(`Successfully updated ${id} record!`);
+                }
+            });
+
+            request.addParameter('firstname', TYPES.VarChar, heroObject.firstname);
+            request.addParameter('health', TYPES.Int, heroObject.health);
+            request.addParameter('stamina', TYPES.Int, heroObject.stamina);
+            request.addParameter('atk', TYPES.Int, heroObject.atk);
+            request.addParameter('canFight', TYPES.Bit, heroObject.canfight);
+
+            connection.execSql(request);
+        });
+
+    });
+}
+
 module.exports = {
     createDatabase,
     dropDatabase,
@@ -281,5 +339,6 @@ module.exports = {
     dropTable,
     queryTables,
     insertRecord,
-    deleteRecord
+    deleteRecord,
+    updateRecord
 };
