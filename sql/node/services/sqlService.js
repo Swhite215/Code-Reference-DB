@@ -6,7 +6,7 @@ const config = require('./config')
 
 const createDatabase = (databaseToCreate) => {
 
-    config.database = "";
+    config.options.database = "";
     const connection = new Connection(config);
 
     return new Promise((resolve, reject) => {
@@ -35,7 +35,7 @@ const createDatabase = (databaseToCreate) => {
 
 const dropDatabase = (databaseToDelete) => {
 
-    config.database = "";
+    config.options.database = "";
     const connection = new Connection(config);
 
     return new Promise((resolve, reject) => {
@@ -64,7 +64,7 @@ const dropDatabase = (databaseToDelete) => {
 
 const queryDatabases = () => {
 
-    config.database = "";
+    config.options.database = "";
     const connection = new Connection(config);
 
     return new Promise((resolve, reject) => {
