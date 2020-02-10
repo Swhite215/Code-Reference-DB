@@ -1,7 +1,7 @@
 const sqlService = require("../services/sqlService");
 
 
-sqlService.dropDatabase("testDatabase").then((res) => {
+sqlService.queryDatabases().then((res) => {
     console.log(res);
 }).catch((e) => {
     console.log(e);
