@@ -130,6 +130,49 @@ app.delete("/db/:name", async (req, res, next) => {
 
 });
 
+/**
+ * @api {get} /dbs Get list of databases on server.
+ * @apiVersion 0.1.0
+ * 
+ * @apiName Get_Databases
+ * @apiGroup MSSQL Database Endpoints
+ *
+ * @apiSuccess {Array} databases String array of databases.
+
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     ["database1", "database2"]
+ *
+ * @apiError Databases_Not_Found There are no databases on this server.
+ *
+ * @apiErrorExample Error-Response-404:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "not_found",
+ *       "reason": "No databases found."
+ *     }
+ */
+app.get("/dbs", async(req, res, next) => {
+
+    try {
+        let databases = await sqlService.queryDatabases();
+
+        if (databases.length == 0) {
+            throw "No databases found";
+        }
+
+        res.send(databases)
+
+    } catch(e) {
+        e.httpStatusCode = 500;
+        e.customMsg = `Error getting databases`;
+
+        return next(e)
+    }
+
+});
+
+
 // Api Documentation
 app.use("/api-docs", express.static(path.join(__dirname, "apidoc")))
 
