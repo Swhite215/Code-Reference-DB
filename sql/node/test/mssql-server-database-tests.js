@@ -135,4 +135,31 @@ describe("SQL Server Database Endpoints", () => {
             });
         });
     });
+
+    describe("GET /dbs - Query List of Databases", () => {
+
+        let sqlQueryDatabasesStub;
+
+        beforeEach(function() {
+            sqlQueryDatabasesStub = sinon.stub(sqlService, "queryDatabases");
+        });
+
+        afterEach(function() {
+            sqlQueryDatabasesStub.restore();
+        });
+
+        it("should return an array of databases", (done) => {
+
+            sqlQueryDatabasesStub.resolves(["database1", "database2", "database3"]);
+
+            chai
+            .request(app)
+            .get(`/dbs`)
+            .end((err, res) => {
+                res.should.have.status(200);
+                expect(res.body).to.be.a("array");
+                done();
+            });
+        });
+    });
 });
