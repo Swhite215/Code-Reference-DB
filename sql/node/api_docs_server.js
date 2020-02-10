@@ -46,6 +46,48 @@ app.post("/db/table/:table", async(req, res, next) => {
     }
 });
 
+/**
+ * @api {post} /db/:name Create a MSSQL database.
+ * @apiVersion 0.1.0
+ * 
+ * @apiName Create_Database
+ * @apiGroup MSSQL Database Endpoints
+ *
+ * @apiParam {String} name Unique name of database.
+ * 
+ * @apiSuccess {Object} Success Confirmation database was created.
+
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     { message: `Successfully created name database!`}
+ *
+ * @apiError Database_Already_Exists The database already exists.
+ *
+ * @apiErrorExample Error-Response-500:
+ *     HTTP/1.1 500 Server Failure
+ *     {
+ *       httpStatusCode: 500,
+ *       message: "Database name already exists. Choose a different database name."
+ *     }
+ */
+app.post("/db/:name", async (req, res, next) => {
+    let dbToCreate = req.params.name;
+
+    try {
+        let newDB = await sqlService.createDatabase(dbToCreate);
+        
+        res.send({message: newDB})
+
+    } catch(e) {
+
+        e.httpStatusCode = 500;
+        e.customMsg = `Error creating database ${dbToCreate}`;
+
+        return next(e)
+    }
+
+});
+
 // Api Documentation
 app.use("/api-docs", express.static(path.join(__dirname, "apidoc")))
 
