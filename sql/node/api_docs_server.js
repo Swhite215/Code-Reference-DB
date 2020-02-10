@@ -88,6 +88,48 @@ app.post("/db/:name", async (req, res, next) => {
 
 });
 
+/**
+ * @api {post} /db/:name Drop a MSSQL database.
+ * @apiVersion 0.1.0
+ * 
+ * @apiName Drop_Database
+ * @apiGroup MSSQL Database Endpoints
+ *
+ * @apiParam {String} name Unique name of database.
+ * 
+ * @apiSuccess {Object} Success Confirmation database was dropped.
+
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     { message: `Successfully dropped name database!`}
+ *
+ * @apiError Database_Does_Not_Exist The database does not exist.
+ *
+ * @apiErrorExample Error-Response-500:
+ *     HTTP/1.1 500 Server Failure
+ *     {
+ *       httpStatusCode: 500,
+ *       message: "Cannot drop the database \'testDatabase\', because it does not exist or you do not have permission."
+ *     }
+ */
+app.delete("/db/:name", async (req, res, next) => {
+    let dbToDelete = req.params.name;
+
+    try {
+        let deleted = await sqlService.dropDatabase(dbToDelete);
+        
+        res.send({message: deleted})
+
+    } catch(e) {
+
+        e.httpStatusCode = 500;
+        e.customMsg = `Error creating database ${dbToDelete}`;
+
+        return next(e)
+    }
+
+});
+
 // Api Documentation
 app.use("/api-docs", express.static(path.join(__dirname, "apidoc")))
 
