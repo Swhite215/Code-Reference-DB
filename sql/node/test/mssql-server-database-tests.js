@@ -77,4 +77,62 @@ describe("SQL Server Database Endpoints", () => {
             });
         });
     });
+
+    describe("DELETE /db/:name - Delete a Database", () => {
+        let databaseToDelete = "testDatabase";
+
+        let sqlDropDatabaseStub;
+
+        beforeEach(function() {
+            sqlDropDatabaseStub = sinon.stub(sqlService, "dropDatabase");
+        });
+
+        afterEach(function() {
+            sqlDropDatabaseStub.restore();
+        });
+
+        it("should delete a database", (done) => {
+
+            let expectedResult = `Successfully dropped ${databaseToDelete} database!`;
+            sqlDropDatabaseStub.withArgs(databaseToDelete).resolves(expectedResult);
+
+            chai
+            .request(app)
+            .del(`/db/${databaseToDelete}`)
+            .end((err, res) => {
+                res.should.have.status(200);
+                expect(res.body.message).to.include(expectedResult);
+                done();
+            });
+        });
+    });
+
+    describe("DELETE /db/:name - Delete a Database", () => {
+        let databaseToDelete = "nullDatabase";
+
+        let sqlDropDatabaseStub;
+
+        beforeEach(function() {
+            sqlDropDatabaseStub = sinon.stub(sqlService, "dropDatabase");
+        });
+
+        afterEach(function() {
+            sqlDropDatabaseStub.restore();
+        });
+
+        it("should return an error if database does not exist", (done) => {
+
+            let expectedResult = `Cannot drop the database '${databaseToDelete}', because it does not exist or you do not have permission.`;
+            sqlDropDatabaseStub.withArgs(databaseToDelete).rejects({message: expectedResult});
+
+            chai
+            .request(app)
+            .del(`/db/${databaseToDelete}`)
+            .end((err, res) => {
+                res.should.have.status(500);
+                expect(res.body.message).to.include(expectedResult);
+                done();
+            });
+        });
+    });
 });
