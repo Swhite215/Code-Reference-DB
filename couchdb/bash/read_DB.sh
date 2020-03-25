@@ -5,6 +5,10 @@ curl 'http://localhost:5984'
 echo "curl -X GET 'http://localhost:5984'" 
 curl -X GET 'http://localhost:5984'
 
+# Get All Server Databases
+echo "curl -X GET 'http://localhost:5984/_all_dbs'" 
+curl -X GET 'http://localhost:5984/_all_dbs'
+
 # Get Database Information
 echo "curl -X GET 'http://localhost:5984/heroes'" 
 curl -X GET 'http://localhost:5984/heroes'
