@@ -1,15 +1,20 @@
 const axios = require("axios");
 
-let database = "heroes"
-let allDocumentsURL = `http://localhost:5984/${database}/_all_docs`;
+let database = process.argv[2];
+
+if (!process.argv[2]) {
+    throw new Error("Missing required CLI arguments...");
+}
+
 let documentBaseURL = `http://localhost:5984/${database}/`;
 let revQuery = "?revs=true";
+let allDocPath = "_all_docs";
 
 (async function main() {
 
     try {
         // HTTP GET Request for All Documents in CouchDB Database
-        let response = await axios.get(allDocumentsURL);
+        let response = await axios.get(documentBaseURL + allDocPath);
 
         //All Documents in CouchDB Database
         let documentArray = response.data.rows;
@@ -29,9 +34,9 @@ let revQuery = "?revs=true";
 
         for (let document of documentIDArray) {
             let documentRevIDsArray = await getDocumentRevisionList(document);
-            let partialDocumentRevArray = await buildRevisionList(documentRevIDsArray)
+            let documentRevArray = await buildRevisionList(documentRevIDsArray)
     
-            fullDocumentRevArray[document.id] = partialDocumentRevArray;
+            fullDocumentRevArray[document.id] = documentRevArray;
         }
 
         // Get Every Document Sorted Latest to Earliest
@@ -69,16 +74,16 @@ async function getDocumentRevisionList(document) {
 // Function to Get All Full Revision IDs for a Document
 async function buildRevisionList(documentRevIDsArray) {
 
-    let partialDocumentRevArray = [];
+    let documentRevArray = [];
     let startRevNum = documentRevIDsArray.start;
     let docCounter = 0;
 
     for (let i = startRevNum; i >= 1; i--) {
-        partialDocumentRevArray.push(i + "-" + documentRevIDsArray.ids[docCounter]);
+        documentRevArray.push(i + "-" + documentRevIDsArray.ids[docCounter]);
         docCounter++;
     }
 
-    return partialDocumentRevArray;
+    return documentRevArray;
 }
 
 // Function to Get All Documents of All Revisions
