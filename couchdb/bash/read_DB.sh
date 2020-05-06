@@ -18,7 +18,7 @@ curl -X GET 'http://localhost:5984/heroes/_all_docs'
 
 # Find All Documents that Satisfy Parameters
 echo "curl -H 'Content-Type:application/json' -X POST 'http://localhost:5984/heroes/_find' -d {JSON}"
-curl -H 'Content-Type:application/json' -X POST 'http://localhost:5984/heroes/_find' -d '{"selector": {"health": { "$gt": 100 }}, "fields": ["name", "health"], "limit": 20}'
+curl -H 'Content-Type:application/json' -X POST 'http://localhost:5984/heroes/_find' -d '{"selector": {"name": { "$gt": "0" }}, "fields": ["name", "health"], "limit": 20}'
 
 # Find All Document Changes
 echo "curl -X GET 'http://localhost:5984/heroes/_changes'" 
