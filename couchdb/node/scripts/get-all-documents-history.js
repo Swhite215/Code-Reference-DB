@@ -37,7 +37,16 @@ let revQuery = "?revs=true";
         // Get Every Document Sorted Latest to Earliest
         let allDocuments = await gatherAllDocuments(fullDocumentRevArray);
 
-        console.log(allDocuments[0].documents);
+        // Log the Results
+        for (let documentGroup of allDocuments) {
+            console.log(`Document ${documentGroup.id} has ${documentGroup.documents.length} versions:`);
+
+            for (var i = 0; i < documentGroup.documents.length; i++) {
+                console.group();
+                console.log(documentGroup.documents[i]);
+                console.groupEnd();
+            }
+        }
 
     } catch(e) {
         console.log("Error retrieving all documents: ", e);
@@ -53,7 +62,7 @@ async function getDocumentRevisionList(document) {
         return documentRevIDsArray;
 
     } catch(e) {
-        console.log("Error retrieving document: ", e);
+        console.log("Error getting partial document revision list: ", e);
     }
 }
 
@@ -86,8 +95,13 @@ async function gatherAllDocuments(fullDocumentRevArray) {
 
         for (let rev of fullDocumentRevArray[documentID]) {
             let documentRevURL = documentBaseURL + documentID + "?rev=" + rev;
-            let document = await axios.get(documentRevURL);
-            documentData.documents.push(document.data);
+
+            try {
+                let document = await axios.get(documentRevURL);
+                documentData.documents.push(document.data);
+            } catch(e) {
+                console.log("Error getting full document revision list: ", e);
+            }
         }
 
         allDocuments.push(documentData);
