@@ -1,11 +1,10 @@
 # Update Document - CAN BE IMPROVED - LOOP: GRAB REV, PARSE, CREATE URL, UPDATE DOCUMENT
-
-JOXOS='{"name": "Joxos", "health": 250, "stamina": 150, "atk":25, "items": ["Unity Stone"], "canFight": true, "current_location": "E.C.R.I.C."}'
-VI='{"name": "Vi", "health": 75, "mana": 150, "atk": 5, "magic": 25,"items": ["Tetrahedron", "Octahedron", "Cube", "Icosahedron"], "canFight": true, "canCast": true, "current_location": "E.C.R.I.C."}'
-ROKH_AEGIS='{"name": "Rokh", "health": 100, "stamina": 125, "atk":35, "items": ["Aegis Core"], "canFight": true, "canSteal": true, "current_location": "E.C.R.I.C."}'
-TRANQUILITY='{"name": "Tranquility", "health": 125, "stamina": 100, "atk":20, "items": ["Serenity Key"], "canFight": true, "current_location": "Hope`s Haven"}'
-BEATRIX_EMORY='{"name": "Beatrix", "health": 125, "mana": 125, "atk":15, "magic": 20, "items": ["Emory Mantle"], "canFight": true, "canCast": true, "canHeal": true, "current_location": "Stone Crest"}'
-INFERNO_FLARE='{"name": "Inferno", "health": 150, "stamina": 75, "atk":40, "items": ["Blazing Blade"], "canFight": true, "canCast": true, "current_location": "Hope`s Haven"}'
+JOXOS='{"name": "Joxos", "health": 500, "stamina": 300, "atk":50, "items": ["Unity Stone"], "canFight": true, "current_location": "E.C.R.I.C."}'
+VI='{"name": "Vi", "health": 150, "mana": 300, "atk": 10, "magic": 50,"items": ["Tetrahedron", "Octahedron", "Cube", "Icosahedron"], "canFight": true, "canCast": true, "current_location": "E.C.R.I.C."}'
+ROKH_AEGIS='{"name": "Rokh", "health": 200, "stamina": 250, "atk":70, "items": ["Aegis Core"], "canFight": true, "canSteal": true, "current_location": "E.C.R.I.C."}'
+TRANQUILITY='{"name": "Tranquility", "health": 250, "stamina": 200, "atk":40, "items": ["Serenity Key"], "canFight": true, "current_location": "Hope`s Haven"}'
+BEATRIX_EMORY='{"name": "Beatrix", "health": 250, "mana": 250, "atk":30, "magic": 40, "items": ["Emory Mantle"], "canFight": true, "canCast": true, "canHeal": true, "current_location": "Mundi Forest"}'
+INFERNO_FLARE='{"name": "Inferno", "health": 300, "stamina": 150, "atk":80, "items": ["Blazing Blade"], "canFight": true, "canCast": true, "current_location": "Hope`s Haven"}'
 
 echo $JOXOS
 echo $VI
