@@ -5,6 +5,7 @@ const app = express();
 const https = require("https")
 const fs = require("fs")
 const path = require("path")
+const mongodb = require("mongodb");
 
 // Services
 const mongoDBService = require("./services/mongodb")
@@ -49,6 +50,54 @@ app.post("/document", async (req, res, next) => {
         } else {
             res.status(503).json({"result": "failure"});
         }
+
+    } catch(e) {
+        e.httpStatusCode = 500;
+        e.customMsg = `Error getting changes for database ${dbToCheck}`;
+
+        return next(e)
+    }
+});
+
+
+/**
+ * @api {delete} /document/:id Create a document in the base collection.
+ * @apiVersion 0.1.0
+ * 
+ * @apiName Delete_Document
+ * @apiGroup MongoDB Document Endpoints
+ *
+ * @apiParam {Number} document_id ID of the document to delete
+ *
+ * @apiSuccess {String} result Success or failure.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "result": "success"
+ *     }
+ * 
+ * @apiError Unable_To_Delete Failed to remove document from collection.
+ *
+ * @apiErrorExample Success-Response:
+ *     HTTP/1.1 503 OK
+ *     {
+ *       "result": "failure"
+ *     }
+ */
+app.delete("/document/:id", async (req, res, next) => {
+
+    let id = req.params.id;
+
+    try {
+        let deletedHero = await mongoDBService.HeroesDb.DeleteOne({_id: new mongodb.ObjectID(id) });
+
+        if (deletedHero.deletedCount == 1) {
+            res.json({"result": "success"});
+        } else {
+            res.status(503).json({"result": "failure"});
+        }
+
 
     } catch(e) {
         e.httpStatusCode = 500;
