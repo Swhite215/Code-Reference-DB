@@ -25,7 +25,7 @@ const ItemsDb = {
   
     DeleteOne: async (collection, query) => DB.collection(collection).deleteOne(query),
   
-    Delete: async (collection, query) => DB.collection(collection).deleteMany(query),
+    DeleteMany: async (collection, query) => DB.collection(collection).deleteMany(query),
 };
 
 function createItemsDb(collection) {
@@ -35,7 +35,7 @@ function createItemsDb(collection) {
         InsertMany: async(value) => ItemsDb.InsertMany(collection, value),
         Update: async (query, value) => ItemsDb.Update(collection, query, value),
         DeleteOne: async (query) => ItemsDb.DeleteOne(collection, query),
-        Delete: async (query) => ItemsDb.Delete(collection, query),
+        DeleteMany: async (query) => ItemsDb.DeleteMany(collection, query),
     };
 }
 
