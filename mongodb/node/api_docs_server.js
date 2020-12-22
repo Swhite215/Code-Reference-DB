@@ -14,7 +14,7 @@ const mongoDBService = require("./services/mongodb")
 app.use(express.json());
 
 /**
- * @api {post} /document Create a document in the base collection.
+ * @api {post} /document Insert a document into the collection.
  * @apiVersion 0.1.0
  * 
  * @apiName Create_Document
@@ -46,6 +46,52 @@ app.post("/document", async (req, res, next) => {
         let newHero = await mongoDBService.HeroesDb.Insert(hero);
 
         if (newHero.insertedCount == 1) {
+            res.json({"result": "success"});
+        } else {
+            res.status(503).json({"result": "failure"});
+        }
+
+    } catch(e) {
+        e.httpStatusCode = 500;
+        e.customMsg = `Error getting changes for database ${dbToCheck}`;
+
+        return next(e)
+    }
+});
+
+/**
+ * @api {post} /documents Insert multiple documents into the collection.
+ * @apiVersion 0.1.0
+ * 
+ * @apiName Create_Documents
+ * @apiGroup MongoDB Document Endpoints
+ *
+ * @apiParam {Array} heroes Array of unique json hero objects to be added to database
+ *
+ * @apiSuccess {String} result Success or failure.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "result": "success"
+ *     }
+ * 
+ * @apiError Unable_To_Insert Failed to insert documents into collection.
+ *
+ * @apiErrorExample Success-Response:
+ *     HTTP/1.1 503 OK
+ *     {
+ *       "result": "failure"
+ *     }
+ */
+app.post("/documents", async (req, res, next) => {
+
+    let heroes = req.body;
+
+    try {
+        let newHeroes = await mongoDBService.HeroesDb.InsertMany(heroes);
+
+        if (newHeroes.insertedCount == req.body.length) {
             res.json({"result": "success"});
         } else {
             res.status(503).json({"result": "failure"});
@@ -111,7 +157,7 @@ app.delete("/document/:id", async (req, res, next) => {
  * @api {delete} /documents/:name Delete multiples document from the collection.
  * @apiVersion 0.1.0
  * 
- * @apiName Delete_Multiple_Documents
+ * @apiName Delete_Documents
  * @apiGroup MongoDB Document Endpoints
  *
  * @apiParam {String} document_name Name of the documents to delete
