@@ -14,6 +14,48 @@ const mongoDBService = require("./services/mongodb")
 app.use(express.json());
 
 /**
+ * @api {get} /document Find a document or documents in the collection.
+ * @apiVersion 0.1.0
+ * 
+ * @apiName Query_Document
+ * @apiGroup MongoDB Document Endpoints
+ *
+ * @apiParam {Object} query Unique query to search for heroes
+ *
+ * @apiSuccess {Object} hero(es) Hero document or heroes documents
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "result": "success"
+ *     }
+ * 
+ * @apiError Unable_To_Query Failed to query documents in collection.
+ *
+ * @apiErrorExample Success-Response:
+ *     HTTP/1.1 503 OK
+ *     {
+ *       "result": "failure"
+ *     }
+ */
+app.get("/document", async (req, res, next) => {
+
+    let query = req.body;
+
+    try {
+        let heroes = await mongoDBService.HeroesDb.Get(query);
+
+        console.log("FINISHED");
+
+    } catch(e) {
+        e.httpStatusCode = 500;
+        e.customMsg = `Error getting document(s) with query: ${query}`;
+
+        return next(e)
+    }
+});
+
+/**
  * @api {post} /document Insert a document into the collection.
  * @apiVersion 0.1.0
  * 
@@ -53,7 +95,7 @@ app.post("/document", async (req, res, next) => {
 
     } catch(e) {
         e.httpStatusCode = 500;
-        e.customMsg = `Error getting changes for database ${dbToCheck}`;
+        e.customMsg = `Error inserting document: ${hero}`;
 
         return next(e)
     }
@@ -99,7 +141,7 @@ app.post("/documents", async (req, res, next) => {
 
     } catch(e) {
         e.httpStatusCode = 500;
-        e.customMsg = `Error getting changes for database ${dbToCheck}`;
+        e.customMsg = `Error inserting documents: ${heroes}`;
 
         return next(e)
     }
@@ -147,7 +189,7 @@ app.delete("/document/:id", async (req, res, next) => {
 
     } catch(e) {
         e.httpStatusCode = 500;
-        e.customMsg = `Error getting changes for database ${dbToCheck}`;
+        e.customMsg = `Error deleting document with id: ${id}`;
 
         return next(e)
     }
@@ -194,7 +236,7 @@ app.delete("/documents/:name", async (req, res, next) => {
 
     } catch(e) {
         e.httpStatusCode = 500;
-        e.customMsg = `Error getting changes for database ${dbToCheck}`;
+        e.customMsg = `Error deleting documents with name: ${name}`;
 
         return next(e)
     }
