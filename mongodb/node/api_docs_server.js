@@ -107,6 +107,53 @@ app.delete("/document/:id", async (req, res, next) => {
     }
 });
 
+/**
+ * @api {delete} /documents/:name Delete multiples document from the collection.
+ * @apiVersion 0.1.0
+ * 
+ * @apiName Delete_Multiple_Documents
+ * @apiGroup MongoDB Document Endpoints
+ *
+ * @apiParam {String} document_name Name of the documents to delete
+ *
+ * @apiSuccess {String} result Success or failure.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "result": "success"
+ *     }
+ * 
+ * @apiError Unable_To_Delete Failed to remove documents from collection.
+ *
+ * @apiErrorExample Success-Response:
+ *     HTTP/1.1 503 OK
+ *     {
+ *       "result": "failure"
+ *     }
+ */
+app.delete("/documents/:name", async (req, res, next) => {
+
+    let name = req.params.name;
+
+    try {
+        let deletedHero = await mongoDBService.HeroesDb.DeleteMany({name: name });
+
+        if (deletedHero.deletedCount >= 1) {
+            res.json({"result": "success"});
+        } else {
+            res.status(503).json({"result": "failure"});
+        }
+
+
+    } catch(e) {
+        e.httpStatusCode = 500;
+        e.customMsg = `Error getting changes for database ${dbToCheck}`;
+
+        return next(e)
+    }
+});
+
 // Api Documentation
 app.use("/api-docs", express.static(path.join(__dirname, "apidoc")))
 
