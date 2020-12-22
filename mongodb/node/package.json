@@ -4,7 +4,8 @@
   "description": "",
   "main": "api_docs_server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "apidoc -f api_docs_server.js -o apidoc/ && node api_docs_server.js"
   },
   "apidoc": {
     "name": "MongoDB ApiDoc Documentation",
