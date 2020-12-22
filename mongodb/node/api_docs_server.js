@@ -117,6 +117,53 @@ app.post("/document", async (req, res, next) => {
 });
 
 /**
+ * @api {put} /document/:id Update a document in the collection.
+ * @apiVersion 0.1.0
+ * 
+ * @apiName Update_Document
+ * @apiGroup MongoDB Document Endpoints
+ *
+ * @apiParam {Object} hero Updated hero object
+ *
+ * @apiSuccess {String} result Success or failure.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "result": "success"
+ *     }
+ * 
+ * @apiError Unable_To_Update Failed to update document in collection.
+ *
+ * @apiErrorExample Success-Response:
+ *     HTTP/1.1 503 OK
+ *     {
+ *       "result": "failure"
+ *     }
+ */
+app.put("/document/:id", async (req, res, next) => {
+
+    let id = req.params.id;
+    let updatedHero = req.body;
+
+    try {
+        let update = await mongoDBService.HeroesDb.Update({"name": id}, updatedHero);
+
+        if (modifiedCount == 1) {
+            res.json({"result": "success"});
+        } else {
+            res.status(503).json({"result": "failure"});
+        }
+        
+    } catch(e) {
+        e.httpStatusCode = 500;
+        e.customMsg = `Error inserting document: ${hero}`;
+
+        return next(e)
+    }
+});
+
+/**
  * @api {post} /documents Insert multiple documents into the collection.
  * @apiVersion 0.1.0
  * 
