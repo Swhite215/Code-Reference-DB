@@ -8,7 +8,8 @@ const path = require("path")
 const mongodb = require("mongodb");
 
 // Services
-const mongoDBService = require("./services/mongodb")
+const mongoDBService = require("./services/mongodb");
+const { resolveSoa } = require("dns");
 
 // Middleware
 app.use(express.json());
@@ -26,9 +27,19 @@ app.use(express.json());
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
- *     {
- *       "result": "success"
- *     }
+ *     [
+ *       {
+ *          "_id": STRING,
+ *          "name": STRING,
+ *          "health": NUMBER,
+ *          "stamina": NUMBER,
+ *          "mana": NUMBER,
+ *          "atk": NUMBER,
+ *          "items": STRING[],
+ *          "canFight": BOOL,
+ *          "canCast": BOOL
+ *       }
+ *     ]
  * 
  * @apiError Unable_To_Query Failed to query documents in collection.
  *
@@ -38,14 +49,18 @@ app.use(express.json());
  *       "result": "failure"
  *     }
  */
-app.get("/document", async (req, res, next) => {
+app.get("/documents", async (req, res, next) => {
 
     let query = req.body;
 
     try {
-        let heroes = await mongoDBService.HeroesDb.Get(query);
+        let documents = await mongoDBService.HeroesDb.Get(query);
 
-        console.log("FINISHED");
+        if (documents.length > 0) {
+            res.json(documents);
+        } else {
+            res.status(404).json({"result": "failure"});
+        }
 
     } catch(e) {
         e.httpStatusCode = 500;
