@@ -61,7 +61,7 @@ app.post("/document", async (req, res, next) => {
 
 
 /**
- * @api {delete} /document/:id Create a document in the base collection.
+ * @api {delete} /document/:id Delete a document from the collection.
  * @apiVersion 0.1.0
  * 
  * @apiName Delete_Document
