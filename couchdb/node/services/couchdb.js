@@ -1,4 +1,4 @@
-const nano = require("nano")('http://localhost:5984')
+const nano = require("nano")('http://admin:password@localhost:5984')
 
 const getDatabase = async (name) => {
     const db = nano.use(name);
