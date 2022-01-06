@@ -14,17 +14,17 @@ echo $BEATRIX_EMORY
 echo $INFERNO_FLARE
 
 # Create document with dynamic id allocation
-jq -n "$JOXOS" | curl -H 'Content-Type:application/json' -X POST 'http://localhost:5984/heroes' -d @-
-jq -n "$VI" | curl -H 'Content-Type:application/json' -X POST 'http://localhost:5984/heroes' -d @-
-jq -n "$ROKH_AEGIS" | curl -H 'Content-Type:application/json' -X POST 'http://localhost:5984/heroes' -d @-
-jq -n "$TRANQUILITY" | curl -H 'Content-Type:application/json' -X POST 'http://localhost:5984/heroes' -d @-
-jq -n "$BEATRIX_EMORY" | curl -H 'Content-Type:application/json' -X POST 'http://localhost:5984/heroes' -d @-
-jq -n "$INFERNO_FLARE" | curl -H 'Content-Type:application/json' -X POST 'http://localhost:5984/heroes' -d @-
+jq -n "$JOXOS" | curl -H 'Content-Type:application/json' -X POST 'http://admin:password@localhost:5984/heroes' -d @-
+jq -n "$VI" | curl -H 'Content-Type:application/json' -X POST 'http://admin:password@localhost:5984/heroes' -d @-
+jq -n "$ROKH_AEGIS" | curl -H 'Content-Type:application/json' -X POST 'http://admin:password@localhost:5984/heroes' -d @-
+jq -n "$TRANQUILITY" | curl -H 'Content-Type:application/json' -X POST 'http://admin:password@localhost:5984/heroes' -d @-
+jq -n "$BEATRIX_EMORY" | curl -H 'Content-Type:application/json' -X POST 'http://admin:password@localhost:5984/heroes' -d @-
+jq -n "$INFERNO_FLARE" | curl -H 'Content-Type:application/json' -X POST 'http://admin:password@localhost:5984/heroes' -d @-
 
 # Create document with custom id
-jq -n "$JOXOS" | curl -H 'Content-Type:application/json' -X PUT 'http://localhost:5984/heroes/JOXOS' -d @-
-jq -n "$VI" | curl -H 'Content-Type:application/json' -X PUT 'http://localhost:5984/heroes/VI' -d @-
-jq -n "$ROKH_AEGIS" | curl -H 'Content-Type:application/json' -X PUT 'http://localhost:5984/heroes/ROKH_AEGIS' -d @-
-jq -n "$TRANQUILITY" | curl -H 'Content-Type:application/json' -X PUT 'http://localhost:5984/heroes/TRANQUILITY' -d @-
-jq -n "$BEATRIX_EMORY" | curl -H 'Content-Type:application/json' -X PUT 'http://localhost:5984/heroes/BEATRIX_EMORY' -d @-
-jq -n "$INFERNO_FLARE" | curl -H 'Content-Type:application/json' -X PUT 'http://localhost:5984/heroes/INFERNO_FLARE' -d @-
+jq -n "$JOXOS" | curl -H 'Content-Type:application/json' -X PUT 'http://admin:password@localhost:5984/heroes/JOXOS' -d @-
+jq -n "$VI" | curl -H 'Content-Type:application/json' -X PUT 'http://admin:password@localhost:5984/heroes/VI' -d @-
+jq -n "$ROKH_AEGIS" | curl -H 'Content-Type:application/json' -X PUT 'http://admin:password@localhost:5984/heroes/ROKH_AEGIS' -d @-
+jq -n "$TRANQUILITY" | curl -H 'Content-Type:application/json' -X PUT 'http://admin:password@localhost:5984/heroes/TRANQUILITY' -d @-
+jq -n "$BEATRIX_EMORY" | curl -H 'Content-Type:application/json' -X PUT 'http://admin:password@localhost:5984/heroes/BEATRIX_EMORY' -d @-
+jq -n "$INFERNO_FLARE" | curl -H 'Content-Type:application/json' -X PUT 'http://admin:password@localhost:5984/heroes/INFERNO_FLARE' -d @-

@@ -1,12 +1,12 @@
 # Delete Document - CAN BE IMPROVED - LOOP: GRAB REV, PARSE, CREATE URL, DELETE DOCUMENT
 
 # Grab Latest Revision and Save to File
-curl -X GET 'http://localhost:5984/heroes/JOXOS?revs=true' | jq '._rev' > joxos_rev.txt
-curl -X GET 'http://localhost:5984/heroes/VI?revs=true' | jq '._rev' > vi_rev.txt
-curl -X GET 'http://localhost:5984/heroes/ROKH_AEGIS?revs=true' | jq '._rev' > rokh_aegis_rev.txt
-curl -X GET 'http://localhost:5984/heroes/TRANQUILITY?revs=true' | jq '._rev' > tranquility_rev.txt
-curl -X GET 'http://localhost:5984/heroes/BEATRIX_EMORY?revs=true' | jq '._rev' > beatrix_emory_rev.txt
-curl -X GET 'http://localhost:5984/heroes/INFERNO_FLARE?revs=true' | jq '._rev' > inferno_flare_rev.txt
+curl -X GET 'http://admin:password@localhost:5984/heroes/JOXOS?revs=true' | jq '._rev' > joxos_rev.txt
+curl -X GET 'http://admin:password@localhost:5984/heroes/VI?revs=true' | jq '._rev' > vi_rev.txt
+curl -X GET 'http://admin:password@localhost:5984/heroes/ROKH_AEGIS?revs=true' | jq '._rev' > rokh_aegis_rev.txt
+curl -X GET 'http://admin:password@localhost:5984/heroes/TRANQUILITY?revs=true' | jq '._rev' > tranquility_rev.txt
+curl -X GET 'http://admin:password@localhost:5984/heroes/BEATRIX_EMORY?revs=true' | jq '._rev' > beatrix_emory_rev.txt
+curl -X GET 'http://admin:password@localhost:5984/heroes/INFERNO_FLARE?revs=true' | jq '._rev' > inferno_flare_rev.txt
 
 # Remove Qoutes from Revision
 sed 's/\"//g' joxos_rev.txt > joxos_rev_value.txt
@@ -32,12 +32,12 @@ echo $BEATRIX_EMORY_REV
 echo $INFERNO_FLARE_REV
 
 # Combine Revision with URL
-JOXOS_URL="http://localhost:5984/heroes/JOXOS?rev=$JOXOS_REV"
-VI_URL="http://localhost:5984/heroes/VI?rev=$VI_REV"
-ROKH_AEGIS_URL="http://localhost:5984/heroes/ROKH_AEGIS?rev=$ROKH_AEGIS_REV"
-TRANQUILITY_URL="http://localhost:5984/heroes/TRANQUILITY?rev=$TRANQUILITY_REV"
-BEATRIX_EMORY_URL="http://localhost:5984/heroes/BEATRIX_EMORY?rev=$BEATRIX_EMORY_REV"
-INFERNO_FLARE_URL="http://localhost:5984/heroes/INFERNO_FLARE?rev=$INFERNO_FLARE_REV"
+JOXOS_URL="http://admin:password@localhost:5984/heroes/JOXOS?rev=$JOXOS_REV"
+VI_URL="http://admin:password@localhost:5984/heroes/VI?rev=$VI_REV"
+ROKH_AEGIS_URL="http://admin:password@localhost:5984/heroes/ROKH_AEGIS?rev=$ROKH_AEGIS_REV"
+TRANQUILITY_URL="http://admin:password@localhost:5984/heroes/TRANQUILITY?rev=$TRANQUILITY_REV"
+BEATRIX_EMORY_URL="http://admin:password@localhost:5984/heroes/BEATRIX_EMORY?rev=$BEATRIX_EMORY_REV"
+INFERNO_FLARE_URL="http://admin:password@localhost:5984/heroes/INFERNO_FLARE?rev=$INFERNO_FLARE_REV"
 
 # Check URLS
 echo $JOXOS_URL

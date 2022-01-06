@@ -1,2 +1,2 @@
 # Delete Database
-curl -X DELETE http://localhost:5984/heroes
+curl -X DELETE http://admin:password@localhost:5984/heroes
